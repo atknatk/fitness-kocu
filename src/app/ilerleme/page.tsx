@@ -1,13 +1,27 @@
 "use client";
-import { useState } from "react";
-import { Scale, Ruler, TrendingDown, Trophy } from "lucide-react";
-import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
+import { Scale, Ruler, TrendingDown, Trophy, ChevronDown, Save } from "lucide-react";
+import { motion, AnimatePresence, useMotionValue, useTransform, animate } from "framer-motion";
+import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 import { useUser } from "@/contexts/UserContext";
 import { useWeightLogs, useBodyMeasurements } from "@/lib/supabase-hooks";
 import { fadeInUp, staggerContainer } from "@/lib/animations";
+import { getWeeks } from "@/data/weeks";
 import ProgressRing from "@/components/ProgressRing";
 import MilestoneToast from "@/components/MilestoneToast";
 import Confetti from "@/components/Confetti";
+
+function AnimatedNumber({ value, decimals = 1, className }: { value: number; decimals?: number; className?: string }) {
+  const count = useMotionValue(0);
+  const rounded = useTransform(count, (v) => v.toFixed(decimals));
+
+  useEffect(() => {
+    const controls = animate(count, value, { duration: 1.2, ease: "easeOut" });
+    return controls.stop;
+  }, [value, count]);
+
+  return <motion.span className={className}>{rounded}</motion.span>;
+}
 
 export default function IlerlemePage() {
   const { profile, mounted: userMounted } = useUser();
@@ -17,28 +31,36 @@ export default function IlerlemePage() {
   const [measureInputs, setMeasureInputs] = useState<Record<string, string>>({});
   const [toast, setToast] = useState({ show: false, message: "" });
   const [confettiTrigger, setConfettiTrigger] = useState(false);
+  const [showTable, setShowTable] = useState(false);
 
   if (!userMounted) {
-    return <div className="animate-pulse p-8 text-center text-gray-400">Yükleniyor...</div>;
+    return (
+      <div className="space-y-3">
+        <div className="skeleton-shimmer rounded-xl h-36" />
+        <div className="skeleton-shimmer rounded-xl h-14" />
+        <div className="skeleton-shimmer rounded-xl h-44" />
+        <div className="skeleton-shimmer rounded-xl h-32" />
+      </div>
+    );
   }
 
   const { startingWeightKg, goalWeightKg } = profile;
   const totalToLose = startingWeightKg - goalWeightKg;
 
-  // Get latest weight from logs
   const latestLog = weightLogs.length > 0 ? weightLogs[weightLogs.length - 1] : null;
   const currentWeight = latestLog ? latestLog.weight_kg : startingWeightKg;
   const totalLost = startingWeightKg - currentWeight;
-  const progressPct = Math.min(100, Math.max(0, (totalLost / totalToLose) * 100));
+  const progressPct = Math.min(100, Math.max(0, Math.round((totalLost / totalToLose) * 100)));
 
-  // Current week from program start
+  const programWeeks = getWeeks(profile.programType);
+  const totalWeeks = programWeeks.length;
+
   const start = new Date(profile.programStartDate);
   const now = new Date();
-  const currentWeek = Math.max(0, Math.min(11, Math.floor((now.getTime() - start.getTime()) / (7 * 24 * 60 * 60 * 1000))));
+  const currentWeek = Math.max(0, Math.min(totalWeeks - 1, Math.floor((now.getTime() - start.getTime()) / (7 * 24 * 60 * 60 * 1000))));
 
-  // Expected weight per week (linear)
-  const weeklyLoss = totalToLose / 12;
-  const weeks = Array.from({ length: 12 }, (_, i) => {
+  const weeklyLoss = totalToLose / totalWeeks;
+  const weeks = Array.from({ length: totalWeeks }, (_, i) => {
     const expected = (startingWeightKg - (i + 1) * weeklyLoss).toFixed(1);
     const log = weightLogs.find((l) => {
       const logDate = new Date(l.date);
@@ -51,7 +73,12 @@ export default function IlerlemePage() {
     return { week: i + 1, expected, actual: log?.weight_kg };
   });
 
-  // Latest measurement
+  const chartData = weeks.map((w) => ({
+    name: `H${w.week}`,
+    hedef: Number(w.expected),
+    gercek: w.actual || null,
+  }));
+
   const latestMeasure = measurements.length > 0 ? measurements[0] : null;
 
   const logWeight = async () => {
@@ -61,16 +88,15 @@ export default function IlerlemePage() {
     await upsertWeight(today, val);
     setInputWeight("");
 
-    // Check milestones
     const lost = startingWeightKg - val;
     if (lost >= totalToLose) {
-      setToast({ show: true, message: "HEDEFE ULAŞTIN! Tebrikler!" });
+      setToast({ show: true, message: "HEDEFE ULASTIN! Tebrikler!" });
       setConfettiTrigger(true);
       setTimeout(() => setConfettiTrigger(false), 100);
     } else if (lost >= totalToLose * 0.75) {
-      setToast({ show: true, message: `%75 hedefe ulaştın! ${(totalToLose - lost).toFixed(1)} kg kaldı!` });
+      setToast({ show: true, message: `%75 hedefe ulastin! ${(totalToLose - lost).toFixed(1)} kg kaldi!` });
     } else if (lost >= totalToLose * 0.5) {
-      setToast({ show: true, message: "Yarıya geldin! Harika gidiyorsun!" });
+      setToast({ show: true, message: "Yariya geldin! Harika gidiyorsun!" });
     }
   };
 
@@ -85,199 +111,278 @@ export default function IlerlemePage() {
       thigh_cm: measureInputs.bacak ? parseFloat(measureInputs.bacak) : undefined,
     });
     setMeasureInputs({});
-    setToast({ show: true, message: "Ölçüler kaydedildi!" });
+    setToast({ show: true, message: "Olculer kaydedildi!" });
   };
 
   const measureFields = [
-    { key: "bel", label: "Bel", emoji: "📏", dbKey: "waist_cm" as const },
-    { key: "gogus", label: "Göğüs", emoji: "📐", dbKey: "chest_cm" as const },
-    { key: "kol", label: "Kol", emoji: "💪", dbKey: "arm_cm" as const },
-    { key: "kalca", label: "Kalça", emoji: "📏", dbKey: "hip_cm" as const },
-    { key: "bacak", label: "Bacak", emoji: "🦵", dbKey: "thigh_cm" as const },
+    { key: "bel", label: "Bel", color: "bg-accent-blue", dbKey: "waist_cm" as const },
+    { key: "gogus", label: "Gogus", color: "bg-accent-green", dbKey: "chest_cm" as const },
+    { key: "kol", label: "Kol", color: "bg-accent-orange", dbKey: "arm_cm" as const },
+    { key: "kalca", label: "Kalca", color: "bg-accent-purple", dbKey: "hip_cm" as const },
+    { key: "bacak", label: "Bacak", color: "bg-accent-cyan", dbKey: "thigh_cm" as const },
+  ];
+
+  const milestones = [
+    { label: "Ilk Kilo", target: 1, emoji: "🎯" },
+    { label: "5 Kg", target: 5, emoji: "🔥" },
+    { label: "Yari Yol", target: totalToLose / 2, emoji: "⭐" },
+    { label: "Hedef!", target: totalToLose, emoji: "🏆" },
   ];
 
   return (
-    <motion.div variants={staggerContainer} initial="initial" animate="animate" className="space-y-4">
+    <motion.div variants={staggerContainer} initial="initial" animate="animate" className="space-y-3">
       <Confetti trigger={confettiTrigger} />
       <MilestoneToast message={toast.message} show={toast.show} onClose={() => setToast({ show: false, message: "" })} />
 
-      {/* Big progress card */}
-      <motion.div variants={fadeInUp} className="bg-linear-to-br from-primary to-accent text-white rounded-2xl p-6 relative overflow-hidden">
-        <div className="absolute top-[-30%] right-[-5%] w-48 h-48 bg-white/5 rounded-full" />
-        <div className="flex items-center gap-6 relative z-10">
-          <ProgressRing
-            value={Math.round(progressPct)}
-            max={100}
-            size={110}
-            strokeWidth={10}
-            color="#FFFFFF"
-            label="Hedefe"
-            sublabel="ilerleme"
-          />
-          <div className="flex-1">
-            <div className="text-3xl font-bold mb-1">{totalLost.toFixed(1)} kg</div>
-            <p className="text-sm opacity-80">verildi — {(totalToLose - totalLost).toFixed(1)} kg kaldı</p>
-            <div className="mt-2 flex items-center gap-2">
-              <span className="text-xs bg-white/20 px-2 py-1 rounded-lg">{startingWeightKg} kg</span>
-              <span className="text-xs opacity-60">→</span>
-              <span className="text-xs bg-white/20 px-2 py-1 rounded-lg font-bold">{currentWeight.toFixed(1)} kg</span>
-              <span className="text-xs opacity-60">→</span>
-              <span className="text-xs bg-white/20 px-2 py-1 rounded-lg">{goalWeightKg} kg</span>
+      {/* Hero progress card */}
+      <motion.div variants={fadeInUp} className="animated-gradient text-white rounded-xl p-4 relative overflow-hidden">
+        <motion.div
+          animate={{ opacity: [0.08, 0.15, 0.08] }}
+          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute top-[-40%] right-[-15%] w-56 h-56 bg-accent-blue/20 rounded-full blur-3xl"
+        />
+        <motion.div
+          animate={{ opacity: [0.05, 0.1, 0.05] }}
+          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+          className="absolute bottom-[-30%] left-[-10%] w-40 h-40 bg-accent-green/15 rounded-full blur-2xl"
+        />
+
+        <div className="flex items-center gap-5 relative z-10">
+          <div className="relative shrink-0">
+            <motion.div
+              animate={{ opacity: [0.15, 0.3, 0.15] }}
+              transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+              className="absolute -inset-3 rounded-full bg-accent-blue/15 blur-xl"
+            />
+            <ProgressRing
+              value={progressPct}
+              max={100}
+              size={120}
+              strokeWidth={10}
+              gradient
+              label={`%${progressPct}`}
+              sublabel="ilerleme"
+            />
+          </div>
+
+          <div className="flex-1 min-w-0">
+            <div className="text-2xl font-display font-bold">
+              <AnimatedNumber value={totalLost} /> kg
+            </div>
+            <p className="text-xs text-white/60 mt-0.5">
+              verildi — {(totalToLose - totalLost).toFixed(1)} kg kaldi
+            </p>
+
+            <div className="flex items-center gap-1.5 mt-2">
+              <span className="text-[10px] bg-white/15 px-1.5 py-0.5 rounded">{startingWeightKg}</span>
+              <span className="text-[10px] text-white/40">&rarr;</span>
+              <span className="text-[10px] bg-white/25 px-1.5 py-0.5 rounded font-bold">{currentWeight.toFixed(1)}</span>
+              <span className="text-[10px] text-white/40">&rarr;</span>
+              <span className="text-[10px] bg-accent-green/30 px-1.5 py-0.5 rounded">{goalWeightKg}</span>
             </div>
           </div>
         </div>
       </motion.div>
 
-      {/* Weight input */}
-      <motion.div variants={fadeInUp} className="bg-white rounded-2xl p-5 shadow-sm">
-        <h2 className="font-bold text-lg mb-3 flex items-center gap-2">
-          <Scale size={20} className="text-primary" /> Kilo Kaydet
-        </h2>
-        <p className="text-sm text-gray-400 mb-3">Her Pazartesi sabahı, aç karnına tartıl:</p>
-        <div className="flex gap-2">
-          <input
-            type="number"
-            step="0.1"
-            placeholder="Kilonuzu girin (kg)"
-            value={inputWeight}
-            onChange={(e) => setInputWeight(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && logWeight()}
-            className="flex-1 px-4 py-3 border-2 border-primary/20 rounded-xl focus:border-primary focus:outline-none text-lg"
-          />
-          <motion.button
-            whileTap={{ scale: 0.95 }}
-            onClick={logWeight}
-            className="px-6 py-3 bg-primary text-white rounded-xl font-semibold hover:bg-primary-dark transition"
-          >
-            Kaydet
-          </motion.button>
+      {/* Weight input - compact inline */}
+      <motion.div variants={fadeInUp} className="bg-bg-card rounded-xl p-4 border border-white/4">
+        <div className="flex items-center gap-3">
+          <Scale size={16} className="text-accent-blue shrink-0" />
+          <h2 className="font-display font-bold text-sm text-text-primary shrink-0">Kilo Kaydet</h2>
+          <div className="flex-1 flex gap-2 ml-auto">
+            <input
+              type="number"
+              step="0.1"
+              placeholder="92.5"
+              value={inputWeight}
+              onChange={(e) => setInputWeight(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && logWeight()}
+              className="w-24 px-3 py-2 bg-bg-secondary border border-white/10 rounded-lg focus:border-accent-blue focus:outline-none text-sm text-text-primary placeholder:text-text-muted text-center"
+            />
+            <motion.button
+              whileTap={{ scale: 0.9 }}
+              onClick={logWeight}
+              className="px-3 py-2 bg-accent-blue rounded-lg text-white transition hover:bg-accent-blue/80"
+            >
+              <Save size={16} />
+            </motion.button>
+          </div>
         </div>
       </motion.div>
 
-      {/* Weight table */}
-      <motion.div variants={fadeInUp} className="bg-white rounded-2xl p-5 shadow-sm overflow-x-auto">
-        <h2 className="font-bold text-lg mb-3 flex items-center gap-2">
-          <TrendingDown size={20} className="text-accent" /> Haftalık Takip
+      {/* Weight Chart */}
+      <motion.div variants={fadeInUp} className="bg-bg-card rounded-xl p-4 border border-white/4">
+        <h2 className="font-display font-bold text-sm mb-3 flex items-center gap-2 text-text-primary">
+          <TrendingDown size={16} className="text-accent-green" /> Haftalik Takip
         </h2>
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="bg-primary text-white">
-              <th className="p-2 text-left rounded-tl-lg">Hafta</th>
-              <th className="p-2 text-center">Hedef</th>
-              <th className="p-2 text-center">Gerçekleşen</th>
-              <th className="p-2 text-center">Fark</th>
-              <th className="p-2 text-center rounded-tr-lg">Grafik</th>
-            </tr>
-          </thead>
-          <tbody>
-            {weeks.map((w, i) => {
-              const diff = w.actual ? (w.actual - Number(w.expected)).toFixed(1) : null;
-              const barPct = w.actual ? Math.max(5, ((startingWeightKg - w.actual) / totalToLose) * 100) : 0;
-              return (
-                <tr
-                  key={i}
-                  className={`${i % 2 === 0 ? "bg-gray-50" : ""} ${i === currentWeek ? "ring-2 ring-primary/30 bg-primary/5" : ""}`}
-                >
-                  <td className="p-2 font-semibold">
-                    Hafta {w.week}
-                    {i === currentWeek && <span className="ml-1 text-xs text-primary">◀</span>}
-                  </td>
-                  <td className="p-2 text-center">{w.expected} kg</td>
-                  <td className="p-2 text-center font-bold">{w.actual ? `${w.actual} kg` : "—"}</td>
-                  <td
-                    className={`p-2 text-center font-semibold ${diff ? (Number(diff) <= 0 ? "text-accent" : "text-danger") : "text-gray-300"}`}
-                  >
-                    {diff ? (Number(diff) <= 0 ? diff : `+${diff}`) : "—"}
-                  </td>
-                  <td className="p-2">
-                    <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
-                      <motion.div
-                        initial={{ width: 0 }}
-                        animate={{ width: `${barPct}%` }}
-                        transition={{ duration: 0.5, delay: i * 0.05 }}
-                        className="h-full bg-linear-to-r from-primary to-accent rounded-full"
-                      />
-                    </div>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </motion.div>
-
-      {/* Body measurements */}
-      <motion.div variants={fadeInUp} className="bg-white rounded-2xl p-5 shadow-sm">
-        <h2 className="font-bold text-lg mb-3 flex items-center gap-2">
-          <Ruler size={20} className="text-royal" /> Vücut Ölçüleri
-        </h2>
-        <p className="text-xs text-gray-400 mb-3">Her ayın 1'inde ölç ve güncelle:</p>
-
-        {latestMeasure && (
-          <div className="mb-4 p-3 bg-royal/5 rounded-xl border border-royal/10">
-            <div className="text-xs text-royal font-semibold mb-2">Son Ölçüm: {latestMeasure.date}</div>
-            <div className="flex flex-wrap gap-3 text-sm">
-              {measureFields.map(({ label, dbKey }) => {
-                const val = latestMeasure[dbKey];
-                return val ? (
-                  <span key={dbKey} className="text-gray-600">
-                    {label}: <strong>{val} cm</strong>
-                  </span>
-                ) : null;
-              })}
-            </div>
-          </div>
-        )}
-
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
-          {measureFields.map(({ key, label, emoji }) => (
-            <div key={key} className="bg-gray-50 rounded-xl p-4 text-center">
-              <div className="text-2xl mb-1">{emoji}</div>
-              <div className="text-xs text-gray-500 mb-2">{label}</div>
-              <input
-                type="number"
-                placeholder="cm"
-                value={measureInputs[key] || ""}
-                onChange={(e) => setMeasureInputs((prev) => ({ ...prev, [key]: e.target.value }))}
-                className="w-20 px-2 py-1.5 border rounded-lg text-center text-sm focus:border-primary focus:outline-none"
+        <div className="h-48">
+          <ResponsiveContainer width="100%" height="100%">
+            <AreaChart data={chartData} margin={{ top: 5, right: 5, left: -25, bottom: 0 }}>
+              <defs>
+                <linearGradient id="weightGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#4F8EF7" stopOpacity={0.3} />
+                  <stop offset="100%" stopColor="#4F8EF7" stopOpacity={0} />
+                </linearGradient>
+              </defs>
+              <XAxis dataKey="name" stroke="#4A4A5A" fontSize={10} tickLine={false} axisLine={false} />
+              <YAxis stroke="#4A4A5A" fontSize={10} tickLine={false} axisLine={false} domain={["dataMin - 2", "dataMax + 2"]} />
+              <Tooltip
+                contentStyle={{
+                  background: "#1A1A24",
+                  border: "1px solid rgba(255,255,255,0.08)",
+                  borderRadius: "8px",
+                  color: "#F0F0F5",
+                  fontSize: "11px",
+                  padding: "6px 10px",
+                }}
+                labelStyle={{ color: "#8E8EA0", fontSize: "10px" }}
               />
-              <div className="text-[10px] text-gray-400 mt-1">cm</div>
+              <Area type="monotone" dataKey="hedef" stroke="#4A4A5A" strokeDasharray="4 4" fill="none" name="Hedef" />
+              <Area type="monotone" dataKey="gercek" stroke="#4F8EF7" fill="url(#weightGrad)" strokeWidth={2} dot={{ r: 3, fill: "#4F8EF7", stroke: "#1A1A24", strokeWidth: 2 }} name="Gerceklesen" connectNulls={false} />
+            </AreaChart>
+          </ResponsiveContainer>
+        </div>
+
+        {/* Mini stat badges */}
+        <div className="flex gap-2 mt-3">
+          {[
+            { label: "Hafta", value: `H${currentWeek + 1}` },
+            { label: "Mevcut", value: `${currentWeight.toFixed(1)} kg` },
+            { label: "Hedef", value: `${goalWeightKg} kg` },
+          ].map((s) => (
+            <div key={s.label} className="flex-1 glass-card rounded-lg px-2 py-1.5 text-center">
+              <div className="text-[10px] text-text-muted">{s.label}</div>
+              <div className="text-xs font-bold text-text-primary">{s.value}</div>
             </div>
           ))}
         </div>
-        <motion.button
-          whileTap={{ scale: 0.95 }}
-          onClick={saveMeasurements}
-          className="mt-4 w-full py-3 bg-royal text-white rounded-xl font-semibold hover:bg-royal/90 transition"
+
+        {/* Collapsible table */}
+        <button
+          onClick={() => setShowTable(!showTable)}
+          className="flex items-center gap-1.5 text-[11px] text-text-muted mt-2 hover:text-text-secondary transition"
         >
-          Ölçüleri Kaydet
+          <motion.div animate={{ rotate: showTable ? 180 : 0 }} transition={{ duration: 0.2 }}>
+            <ChevronDown size={12} />
+          </motion.div>
+          Detayli tablo
+        </button>
+        <AnimatePresence>
+          {showTable && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+              className="overflow-hidden"
+            >
+              <table className="w-full text-xs mt-2">
+                <thead>
+                  <tr className="bg-accent-blue/10 text-accent-blue">
+                    <th className="p-1.5 text-left rounded-tl-lg">Hafta</th>
+                    <th className="p-1.5 text-center">Hedef</th>
+                    <th className="p-1.5 text-center">Gercek</th>
+                    <th className="p-1.5 text-center rounded-tr-lg">Fark</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {weeks.map((w, i) => {
+                    const diff = w.actual ? (w.actual - Number(w.expected)).toFixed(1) : null;
+                    return (
+                      <tr key={i} className={`border-b border-white/4 ${i === currentWeek ? "bg-accent-blue/5" : ""}`}>
+                        <td className="p-1.5 font-semibold text-text-primary">
+                          H{w.week}{i === currentWeek && <span className="ml-1 text-accent-blue">◀</span>}
+                        </td>
+                        <td className="p-1.5 text-center text-text-secondary">{w.expected}</td>
+                        <td className="p-1.5 text-center font-bold text-text-primary">{w.actual || "—"}</td>
+                        <td className={`p-1.5 text-center font-semibold ${diff ? (Number(diff) <= 0 ? "text-accent-green" : "text-accent-red") : "text-text-muted"}`}>
+                          {diff ? (Number(diff) <= 0 ? diff : `+${diff}`) : "—"}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.div>
+
+      {/* Body measurements - professional list */}
+      <motion.div variants={fadeInUp} className="bg-bg-card rounded-xl p-4 border border-white/4">
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="font-display font-bold text-sm flex items-center gap-2 text-text-primary">
+            <Ruler size={16} className="text-accent-purple" /> Vucut Olculeri
+          </h2>
+          {latestMeasure && (
+            <span className="text-[10px] text-text-muted">Son: {latestMeasure.date}</span>
+          )}
+        </div>
+
+        <div className="space-y-2">
+          {measureFields.map(({ key, label, color, dbKey }) => {
+            const lastVal = latestMeasure?.[dbKey];
+            return (
+              <div key={key} className="flex items-center gap-3 bg-bg-secondary rounded-lg px-3 py-2 border border-white/4">
+                <div className={`w-2 h-2 rounded-full ${color} shrink-0`} />
+                <div className="flex-1 min-w-0">
+                  <span className="text-xs font-medium text-text-primary">{label}</span>
+                  {lastVal && <span className="text-[10px] text-text-muted ml-2">son: {lastVal} cm</span>}
+                </div>
+                <div className="flex items-center gap-1">
+                  <input
+                    type="number"
+                    placeholder={lastVal ? String(lastVal) : "—"}
+                    value={measureInputs[key] || ""}
+                    onChange={(e) => setMeasureInputs((prev) => ({ ...prev, [key]: e.target.value }))}
+                    className="w-16 px-2 py-1 bg-bg-card border border-white/10 rounded text-center text-xs text-text-primary focus:border-accent-purple focus:outline-none"
+                  />
+                  <span className="text-[10px] text-text-muted">cm</span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        <motion.button
+          whileTap={{ scale: 0.97 }}
+          onClick={saveMeasurements}
+          className="mt-3 w-full py-2 bg-accent-purple/15 text-accent-purple rounded-lg font-semibold text-xs hover:bg-accent-purple/25 transition border border-accent-purple/20"
+        >
+          Olculeri Kaydet
         </motion.button>
       </motion.div>
 
-      {/* Milestone badges */}
-      <motion.div variants={fadeInUp} className="bg-white rounded-2xl p-5 shadow-sm">
-        <h2 className="font-bold text-lg mb-3 flex items-center gap-2">
-          <Trophy size={20} className="text-warning" /> Kilometre Taşları
+      {/* Milestone badges - compact */}
+      <motion.div variants={fadeInUp} className="bg-bg-card rounded-xl p-4 border border-white/4">
+        <h2 className="font-display font-bold text-sm mb-3 flex items-center gap-2 text-text-primary">
+          <Trophy size={16} className="text-accent-gold" /> Kilometre Taslari
         </h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          {[
-            { label: "İlk Kilo", target: 1, emoji: "🎯" },
-            { label: "5 Kg", target: 5, emoji: "🔥" },
-            { label: "Yarı Yol", target: totalToLose / 2, emoji: "⭐" },
-            { label: "Hedef!", target: totalToLose, emoji: "🏆" },
-          ].map(({ label, target, emoji }) => {
+        <div className="grid grid-cols-4 gap-2">
+          {milestones.map(({ label, target, emoji }) => {
             const achieved = totalLost >= target;
             return (
               <motion.div
                 key={label}
-                whileHover={{ scale: 1.05 }}
-                className={`rounded-xl p-4 text-center border-2 transition-all ${
-                  achieved ? "bg-warning/10 border-warning/30" : "bg-gray-50 border-gray-100 opacity-50"
+                whileHover={achieved ? { scale: 1.05 } : {}}
+                className={`rounded-xl p-3 text-center transition-all border relative overflow-hidden ${
+                  achieved
+                    ? "gradient-border border-transparent"
+                    : "bg-bg-secondary border-white/4 opacity-25"
                 }`}
               >
-                <div className="text-3xl mb-1">{emoji}</div>
-                <div className={`text-sm font-bold ${achieved ? "text-warning" : "text-gray-400"}`}>{label}</div>
-                <div className="text-xs text-gray-400">{target.toFixed(1)} kg</div>
+                {achieved && (
+                  <motion.div
+                    animate={{ opacity: [0.1, 0.25, 0.1] }}
+                    transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+                    className="absolute inset-0 bg-accent-gold/5 rounded-xl"
+                  />
+                )}
+                <div className="text-2xl mb-1 relative z-10">{emoji}</div>
+                <div className={`text-[10px] font-display font-bold relative z-10 ${achieved ? "text-accent-gold" : "text-text-muted"}`}>
+                  {label}
+                </div>
+                <div className="text-[9px] text-text-muted relative z-10">{target.toFixed(1)} kg</div>
               </motion.div>
             );
           })}

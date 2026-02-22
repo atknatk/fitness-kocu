@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 import confetti from "canvas-confetti";
 
-const COLORS = ["#2E75B6", "#27AE60", "#E67E22", "#8E44AD"];
+const COLORS = ["#4F8EF7", "#00E676", "#FF6D00", "#B388FF", "#00D4FF", "#FFD740"];
 
 interface Props {
   trigger: boolean;

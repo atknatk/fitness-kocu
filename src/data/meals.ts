@@ -13,8 +13,8 @@ export function getMacroTargets(programType: ProgramType) {
 // =============================================
 const MALE_MACROS = {
   calories: "1800-2000",
-  protein: "~135g",
-  carbs: "~200g",
+  protein: "~150g",
+  carbs: "~185g",
   fat: "~65g",
 };
 
@@ -60,23 +60,23 @@ const MALE_MEALS: MealSection[] = [
       {
         title: "Izgara Tavuk",
         items:
-          "150g ızgara tavuk göğsü + 1 porsiyon bulgur pilavı + büyük karışık salata (zeytinyağı-limon sos)",
-        cal: "~550 kcal",
-        protein: "~45g",
+          "180g ızgara tavuk göğsü + 1 porsiyon bulgur pilavı + büyük karışık salata (zeytinyağı-limon sos)",
+        cal: "~600 kcal",
+        protein: "~52g",
       },
       {
         title: "Köfte Tabağı",
         items:
-          "150g ızgara köfte (az yağlı) + 1 porsiyon tam buğday makarna + haşlanmış brokoli",
-        cal: "~570 kcal",
-        protein: "~40g",
+          "180g ızgara köfte (az yağlı) + 1 porsiyon tam buğday makarna + haşlanmış brokoli",
+        cal: "~620 kcal",
+        protein: "~46g",
       },
       {
         title: "Balık Öğle",
         items:
-          "150g ızgara balık + pirinç pilavı (küçük porsiyon) + mevsim salatası",
-        cal: "~520 kcal",
-        protein: "~42g",
+          "180g ızgara balık + pirinç pilavı (küçük porsiyon) + mevsim salatası",
+        cal: "~560 kcal",
+        protein: "~48g",
       },
     ],
   },
@@ -87,22 +87,22 @@ const MALE_MEALS: MealSection[] = [
     title: "Ara Öğün",
     meals: [
       {
-        title: "Kuruyemiş Mix",
-        items: "1 avuç badem (30g) + 1 elma",
-        cal: "~200 kcal",
-        protein: "~7g",
-      },
-      {
-        title: "Yoğurt + Meyve",
-        items: "1 kase yoğurt + 1 tatlı kaşığı bal + çilek/muz",
+        title: "Süzme Yoğurt",
+        items: "200g süzme yoğurt + 1 elma + 5 badem",
         cal: "~220 kcal",
-        protein: "~10g",
+        protein: "~20g",
       },
       {
-        title: "Protein Atıştırma",
-        items: "2 yemek kaşığı fıstık ezmesi + 1 dilim tam buğday ekmek",
-        cal: "~230 kcal",
-        protein: "~12g",
+        title: "Lor Peynirli Atıştırma",
+        items: "100g lor peyniri + 1 dilim tam buğday ekmek + salatalık",
+        cal: "~200 kcal",
+        protein: "~18g",
+      },
+      {
+        title: "Fıstık Ezmeli",
+        items: "2 yemek kaşığı fıstık ezmesi + 1 dilim tam buğday ekmek + 1 bardak süt",
+        cal: "~280 kcal",
+        protein: "~17g",
       },
     ],
   },
@@ -115,9 +115,9 @@ const MALE_MEALS: MealSection[] = [
       {
         title: "Balık Akşam",
         items:
-          "150g somon/levrek (fırında) + sebze çorbası + yeşil salata",
-        cal: "~450 kcal",
-        protein: "~38g",
+          "180g somon/levrek (fırında) + sebze çorbası + yeşil salata",
+        cal: "~500 kcal",
+        protein: "~44g",
       },
       {
         title: "Omlet Akşam",
@@ -129,9 +129,9 @@ const MALE_MEALS: MealSection[] = [
       {
         title: "Tavuk Sote",
         items:
-          "130g tavuk sote + bol sebze (kabak, biber, mantar) + 1 kase yoğurt",
-        cal: "~430 kcal",
-        protein: "~35g",
+          "160g tavuk sote + bol sebze (kabak, biber, mantar) + 1 kase yoğurt",
+        cal: "~480 kcal",
+        protein: "~42g",
       },
     ],
   },
@@ -143,68 +143,66 @@ const MALE_MEALS: MealSection[] = [
 const FEMALE_MACROS = {
   calories: "1500-1650",
   protein: "~100g",
-  carbs: "~140g",
+  carbs: "~180g",
   fat: "~45g",
 };
 
 // =============================================
-// KADIN — Beslenme Planı (5 öğün — Body Recomp)
+// KADIN — Beslenme Planı (7 öğün — Body Recomp)
 // =============================================
 const FEMALE_MEALS: MealSection[] = [
   {
     key: "breakfast",
     icon: "🌅",
-    time: "05:30",
+    time: "06:00",
     title: "Kahvaltı",
     meals: [
       {
-        title: "Yulaf + Protein",
+        title: "Seçenek A",
         items:
-          "1 porsiyon yulaf, 1 ölçek protein tozu, 5 badem, yarım muz",
-        cal: "~340 kcal",
-        protein: "~28g",
+          "2 yumurta (haşlanmış) + 1 dilim tam buğday ekmek + salatalık-biber + 1 çay kaşığı zeytinyağı + yeşillik",
+        cal: "~370 kcal",
+        protein: "~18g",
       },
       {
-        title: "Yumurta Kahvaltı",
+        title: "Seçenek B",
         items:
-          "2 yumurta (1 bütün + 1 beyaz), 1 dilim tam buğday ekmek, domates, salatalık",
-        cal: "~300 kcal",
-        protein: "~22g",
+          "1 kase yulaf (40g) + 150ml süt + 1 yemek kaşığı bal + 5-6 badem + muz yarısı",
+        cal: "~350 kcal",
+        protein: "~12g",
       },
       {
-        title: "Smoothie Bowl",
+        title: "Seçenek C",
         items:
-          "1 avuç dondurulmuş meyve, 150ml süt, 1 ölçek protein tozu, 1 yemek kaşığı chia",
-        cal: "~320 kcal",
-        protein: "~25g",
+          "200g yoğurt + 2 yemek kaşığı yulaf + 1 avuç yaban mersini + 1 tatlı kaşığı bal",
+        cal: "~350 kcal",
+        protein: "~14g",
       },
     ],
   },
   {
-    key: "mid_morning",
+    key: "snack1",
     icon: "🍎",
-    time: "09:00",
-    title: "Kuşluk",
+    time: "09:30",
+    title: "Ara Öğün 1",
     meals: [
       {
-        title: "Yoğurt + Meyve",
-        items:
-          "150g Yunan yoğurdu, 1 avuç çilek, 1 tatlı kaşığı bal",
-        cal: "~180 kcal",
-        protein: "~12g",
+        title: "Seçenek A",
+        items: "1 avuç badem (15g) + 1 küçük elma",
+        cal: "~150 kcal",
+        protein: "~4g",
       },
       {
-        title: "Peynir + Ceviz",
-        items:
-          "30g beyaz peynir, 3 ceviz, 1 dilim tam buğday ekmek",
-        cal: "~200 kcal",
-        protein: "~10g",
+        title: "Seçenek B",
+        items: "150g yoğurt + 1 tatlı kaşığı bal",
+        cal: "~150 kcal",
+        protein: "~8g",
       },
       {
-        title: "Muz + Fıstık Ezmesi",
-        items: "1 küçük muz, 1 tatlı kaşığı fıstık ezmesi",
-        cal: "~170 kcal",
-        protein: "~5g",
+        title: "Seçenek C",
+        items: "1 dilim tam buğday ekmek + 2 dilim beyaz peynir",
+        cal: "~150 kcal",
+        protein: "~8g",
       },
     ],
   },
@@ -215,52 +213,66 @@ const FEMALE_MEALS: MealSection[] = [
     title: "Öğle Yemeği",
     meals: [
       {
-        title: "Izgara Tavuk Salatası",
+        title: "Seçenek A",
         items:
-          "150g ızgara tavuk göğsü, bol yeşillik, 1 yemek kaşığı zeytinyağı, limon",
-        cal: "~400 kcal",
-        protein: "~35g",
-      },
-      {
-        title: "Ton Balıklı Wrap",
-        items:
-          "1 tam buğday lavaş, 100g ton balığı, marul, domates, yoğurt sos",
-        cal: "~420 kcal",
-        protein: "~30g",
-      },
-      {
-        title: "Mercimek Çorbası + Tavuk",
-        items:
-          "1 kase mercimek çorbası, 100g haşlanmış tavuk, salata",
+          "150g ızgara tavuk göğsü + 1 kase bulgur pilavı (80g kuru) + bol yeşil salata + 1 tatlı kaşığı zeytinyağı",
         cal: "~450 kcal",
-        protein: "~32g",
+        protein: "~40g",
+      },
+      {
+        title: "Seçenek B",
+        items:
+          "150g levrek (fırında/ızgara) + haşlanmış sebze (brokoli, havuç) + 100g esmer pirinç",
+        cal: "~450 kcal",
+        protein: "~38g",
+      },
+      {
+        title: "Seçenek C",
+        items:
+          "150g somon + kinoa (80g kuru) + roka-salatalık salatası",
+        cal: "~450 kcal",
+        protein: "~38g",
+      },
+    ],
+  },
+  {
+    key: "snack2",
+    icon: "💪",
+    time: "15:30",
+    title: "Ara Öğün 2 / Antrenman Öncesi",
+    meals: [
+      {
+        title: "Seçenek A",
+        items: "1 muz + 1 yemek kaşığı fıstık ezmesi",
+        cal: "~200 kcal",
+        protein: "~5g",
+      },
+      {
+        title: "Seçenek B",
+        items: "150g süzme yoğurt + 1 yemek kaşığı yulaf + 5 badem",
+        cal: "~200 kcal",
+        protein: "~15g",
+      },
+      {
+        title: "Seçenek C",
+        items:
+          "Protein smoothie: 200ml süt + 1 muz + 1 yemek kaşığı yulaf",
+        cal: "~200 kcal",
+        protein: "~10g",
       },
     ],
   },
   {
     key: "pre_workout",
-    icon: "💪",
-    time: "16:30",
+    icon: "☕",
+    time: "17:30",
     title: "Antrenman Öncesi",
     meals: [
       {
-        title: "Pirinç Keki + Peynir",
-        items: "2 pirinç keki, 30g lor peyniri, bal",
-        cal: "~200 kcal",
-        protein: "~15g",
-      },
-      {
-        title: "Muz + Protein Bar",
-        items: "1 küçük muz, yarım protein bar",
-        cal: "~220 kcal",
-        protein: "~12g",
-      },
-      {
-        title: "Yulaf Topları",
-        items:
-          "2 ev yapımı yulaf topları (yulaf, bal, fıstık ezmesi)",
-        cal: "~230 kcal",
-        protein: "~8g",
+        title: "Yeşil Çay / Kahve + Hurma",
+        items: "1 fincan yeşil çay veya siyah kahve + 3-4 hurma",
+        cal: "~50 kcal",
+        protein: "~1g",
       },
     ],
   },
@@ -268,28 +280,54 @@ const FEMALE_MEALS: MealSection[] = [
     key: "dinner",
     icon: "🌙",
     time: "19:30",
-    title: "Akşam Yemeği (antrenman sonrası)",
+    title: "Akşam Yemeği / Antrenman Sonrası",
     meals: [
       {
-        title: "Somon + Sebze",
+        title: "Seçenek A",
         items:
-          "150g fırında somon, buharda brokoli ve havuç, 1/2 porsiyon bulgur",
+          "150g antrikot (ızgara) + bol yeşil salata + 1 dilim ekmek",
         cal: "~400 kcal",
-        protein: "~32g",
+        protein: "~35g",
       },
       {
-        title: "Tavuk Sote",
+        title: "Seçenek B",
         items:
-          "150g tavuk göğsü sote, bol sebze (biber, kabak, mantar), 1/2 porsiyon pirinç",
-        cal: "~380 kcal",
-        protein: "~30g",
+          "150g tavuk göğsü + fırında sebze (kabak, biber, patlıcan) + 80g makarna",
+        cal: "~400 kcal",
+        protein: "~38g",
       },
       {
-        title: "Köfte + Salata",
+        title: "Seçenek C",
         items:
-          "100g ev yapımı köfte (yağsız), bol yeşil salata, 1 dilim ekmek",
-        cal: "~370 kcal",
-        protein: "~28g",
+          "150g somon/levrek + haşlanmış patates (1 orta boy) + salata",
+        cal: "~400 kcal",
+        protein: "~35g",
+      },
+    ],
+  },
+  {
+    key: "evening_snack",
+    icon: "🌜",
+    time: "21:30",
+    title: "Gece Atıştırma (İsteğe Bağlı)",
+    meals: [
+      {
+        title: "Seçenek A",
+        items: "150g yoğurt",
+        cal: "~100 kcal",
+        protein: "~6g",
+      },
+      {
+        title: "Seçenek B",
+        items: "200ml ılık süt + tarçın",
+        cal: "~100 kcal",
+        protein: "~7g",
+      },
+      {
+        title: "Seçenek C",
+        items: "10 badem",
+        cal: "~100 kcal",
+        protein: "~4g",
       },
     ],
   },

@@ -40,7 +40,7 @@ export default function BottomSheet({ isOpen, onClose, title, children }: Props)
             exit="hidden"
             transition={{ duration: 0.2 }}
             onClick={onClose}
-            className="fixed inset-0 z-50 bg-black/50"
+            className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm"
           />
 
           {/* Sheet */}
@@ -59,18 +59,18 @@ export default function BottomSheet({ isOpen, onClose, title, children }: Props)
                 onClose();
               }
             }}
-            className="fixed bottom-0 left-0 right-0 z-50 bg-white rounded-t-2xl shadow-2xl"
+            className="fixed bottom-0 left-0 right-0 z-50 bg-bg-card rounded-t-2xl border-t border-white/6"
             style={{ maxHeight: "85vh" }}
           >
             {/* Drag Handle */}
             <div className="flex justify-center pt-3 pb-1">
-              <div className="w-10 h-1.5 rounded-full bg-gray-300" />
+              <div className="w-10 h-1.5 rounded-full bg-white/20" />
             </div>
 
             {/* Title */}
             {title && (
               <div className="px-5 pb-3 pt-1">
-                <h2 className="text-lg font-bold text-gray-900">{title}</h2>
+                <h2 className="text-lg font-display font-bold text-text-primary">{title}</h2>
               </div>
             )}
 

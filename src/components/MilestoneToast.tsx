@@ -29,15 +29,15 @@ export default function MilestoneToast({ message, show, onClose }: Props) {
           exit={{ opacity: 0, y: 20, scale: 0.95 }}
           transition={{ type: "spring", stiffness: 400, damping: 25 }}
           className="fixed bottom-28 md:bottom-8 left-1/2 -translate-x-1/2 z-[100]
-            bg-gradient-to-r from-accent to-primary text-white
-            px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-3
+            bg-linear-to-r from-accent-green to-accent-blue text-white
+            px-5 py-3 rounded-2xl shadow-[0_0_40px_rgba(0,230,118,0.3)] flex items-center gap-3
             max-w-[90vw]"
         >
           <motion.div
             animate={{ rotate: [0, -15, 15, -10, 10, 0] }}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
-            <Trophy className="w-6 h-6 text-yellow-300" />
+            <Trophy className="w-6 h-6 text-accent-gold" />
           </motion.div>
           <span className="font-semibold text-sm">{message}</span>
         </motion.div>

@@ -58,6 +58,10 @@ const MAPPING = {
   rear_delt_fly: "Reverse_Flyes",
   hammer_curl: "Hammer_Curls",
   tricep_kickback: "Tricep_Dumbbell_Kickback",
+  push_up: "Decline_Push-Up",
+  dumbbell_chest_fly: "Dumbbell_Flyes",
+  dead_bug: "Dead_Bug",
+  arnold_press: "Arnold_Dumbbell_Press",
 };
 
 function download(url, dest) {

@@ -22,10 +22,10 @@ export default function ExerciseDemo({ exercise }: Props) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, ease: "easeOut" }}
-      className="rounded-2xl border border-gray-200 bg-white overflow-hidden shadow-sm"
+      className="rounded-2xl border border-white/4 bg-bg-card overflow-hidden"
     >
       {/* Exercise Images (side by side) */}
-      <div className="relative w-full bg-gray-50 overflow-hidden">
+      <div className="relative w-full bg-bg-secondary overflow-hidden">
         {visibleImages.length > 0 ? (
           <div className="flex">
             {exercise.images.map((src, i) =>
@@ -42,7 +42,7 @@ export default function ExerciseDemo({ exercise }: Props) {
             )}
           </div>
         ) : (
-          <div className="flex flex-col items-center justify-center py-10 text-gray-400 gap-2">
+          <div className="flex flex-col items-center justify-center py-10 text-text-muted gap-2">
             <Dumbbell size={48} strokeWidth={1.5} />
             <span className="text-sm font-medium">{exercise.name}</span>
           </div>
@@ -53,10 +53,10 @@ export default function ExerciseDemo({ exercise }: Props) {
       <div className="p-4 space-y-3">
         {/* Name + Muscle Badge */}
         <div className="flex items-center justify-between gap-2 flex-wrap">
-          <h3 className="font-semibold text-gray-900 text-base leading-tight">
+          <h3 className="font-display font-semibold text-text-primary text-base leading-tight">
             {exercise.name}
           </h3>
-          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary">
+          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-accent-blue/10 text-accent-blue">
             {exercise.muscle}
           </span>
         </div>
@@ -67,7 +67,7 @@ export default function ExerciseDemo({ exercise }: Props) {
             href={exercise.youtubeUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-danger/10 text-danger text-sm font-semibold hover:bg-danger/20 transition-colors"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-accent-red/10 text-accent-red text-sm font-semibold hover:bg-accent-red/20 transition-colors"
           >
             <Play size={16} fill="currentColor" />
             YouTube&apos;da Izle
@@ -76,8 +76,8 @@ export default function ExerciseDemo({ exercise }: Props) {
 
         {/* Form Tip */}
         {exercise.tip && (
-          <div className="flex gap-2.5 p-3 rounded-xl bg-blue-50 text-sm text-gray-700 leading-relaxed">
-            <Info size={16} className="text-primary shrink-0 mt-0.5" />
+          <div className="flex gap-2.5 p-3 rounded-xl bg-accent-blue/5 border border-accent-blue/10 text-sm text-text-secondary leading-relaxed">
+            <Info size={16} className="text-accent-blue shrink-0 mt-0.5" />
             <span>{exercise.tip}</span>
           </div>
         )}

@@ -21,7 +21,13 @@ export default function KocunPage() {
   const currentWeek = Math.max(0, Math.min(11, Math.floor((now.getTime() - start.getTime()) / (7 * 24 * 60 * 60 * 1000))));
 
   if (!userMounted) {
-    return <div className="animate-pulse p-8 text-center text-gray-400">Yükleniyor...</div>;
+    return (
+      <div className="space-y-4">
+        <div className="skeleton-shimmer rounded-2xl h-36" />
+        <div className="skeleton-shimmer rounded-2xl h-48" />
+        <div className="skeleton-shimmer rounded-2xl h-40" />
+      </div>
+    );
   }
 
   return (
@@ -29,35 +35,39 @@ export default function KocunPage() {
       {/* Coach banner */}
       <motion.div
         variants={fadeInUp}
-        className="bg-linear-to-br from-dark to-primary-dark text-white rounded-2xl p-6 relative overflow-hidden"
+        className="animated-gradient text-white rounded-2xl p-6 relative overflow-hidden"
       >
-        <div className="absolute top-[-30%] right-[-5%] w-48 h-48 bg-white/5 rounded-full" />
+        <motion.div
+          animate={{ y: [0, -15, 0], opacity: [0.05, 0.1, 0.05] }}
+          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute top-[-30%] right-[-5%] w-48 h-48 bg-accent-blue/15 rounded-full blur-2xl"
+        />
         <div className="relative z-10">
           <div className="flex items-center gap-3 mb-3">
             <motion.div
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               transition={{ type: "spring", stiffness: 300 }}
-              className="w-12 h-12 rounded-full bg-primary/30 flex items-center justify-center text-2xl"
+              className="w-12 h-12 rounded-full bg-accent-blue/20 flex items-center justify-center text-2xl"
             >
               🏋️
             </motion.div>
             <div>
-              <h1 className="text-xl font-bold">{profile.name}, Koçun Konuşuyor</h1>
-              <p className="text-xs text-blue-200">Bilgi + Motivasyon = Başarı</p>
+              <h1 className="text-xl font-display font-bold">{profile.name}, Kocun Konusuyor</h1>
+              <p className="text-xs text-accent-blue/70">Bilgi + Motivasyon = Basari</p>
             </div>
           </div>
-          <p className="italic text-sm text-blue-100">
-            &ldquo;Sana en iyi yaşam koçu kendini geliştirme isteğindir. Ben sadece yol gösteriyorum.&rdquo;
+          <p className="italic text-sm text-text-secondary">
+            &ldquo;Sana en iyi yasam kocu kendini gelistirme istegindir. Ben sadece yol gosteriyorum.&rdquo;
           </p>
         </div>
       </motion.div>
 
       {/* Knowledge base */}
-      <motion.div variants={fadeInUp} className="bg-white rounded-2xl p-5 shadow-sm">
-        <h2 className="font-bold text-lg mb-4 flex items-center gap-2">
-          <BookOpen size={20} className="text-primary" /> Bilgi Bankası
-          <span className="text-sm font-normal text-gray-400 ml-auto">{tips.length} ipucu</span>
+      <motion.div variants={fadeInUp} className="bg-bg-card rounded-2xl p-5 border border-white/4">
+        <h2 className="font-display font-bold text-lg mb-4 flex items-center gap-2 text-text-primary">
+          <BookOpen size={20} className="text-accent-blue" /> Bilgi Bankasi
+          <span className="text-sm font-normal text-text-muted ml-auto">{tips.length} ipucu</span>
         </h2>
         <div className="space-y-2">
           {tips.map((tip, i) => {
@@ -68,16 +78,16 @@ export default function KocunPage() {
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.03 }}
-                className="border border-gray-100 rounded-xl overflow-hidden"
+                className="border border-white/4 rounded-xl overflow-hidden"
               >
                 <button
                   onClick={() => setOpenTip(isOpen ? null : i)}
-                  className="w-full flex items-center gap-3 p-4 hover:bg-gray-50 transition text-left"
+                  className="w-full flex items-center gap-3 p-4 hover:bg-bg-card-hover transition text-left"
                 >
                   <span className="text-2xl">{tip.icon}</span>
-                  <span className="flex-1 font-semibold text-sm">{tip.title}</span>
+                  <span className="flex-1 font-semibold text-sm text-text-primary">{tip.title}</span>
                   <motion.div animate={{ rotate: isOpen ? 180 : 0 }} transition={{ duration: 0.2 }}>
-                    <ChevronDown size={16} className="text-gray-400" />
+                    <ChevronDown size={16} className="text-text-muted" />
                   </motion.div>
                 </button>
                 <AnimatePresence>
@@ -86,12 +96,12 @@ export default function KocunPage() {
                       initial={{ height: 0, opacity: 0 }}
                       animate={{ height: "auto", opacity: 1 }}
                       exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.2 }}
+                      transition={{ type: "spring", stiffness: 300, damping: 30 }}
                       className="overflow-hidden"
                     >
                       <div className="px-4 pb-4">
-                        <div className="bg-primary/5 rounded-xl p-4 border border-primary/10">
-                          <p className="text-sm text-gray-600 leading-relaxed">{tip.content}</p>
+                        <div className="bg-accent-blue/5 rounded-xl p-4 border border-accent-blue/10">
+                          <p className="text-sm text-text-secondary leading-relaxed">{tip.content}</p>
                         </div>
                       </div>
                     </motion.div>
@@ -104,9 +114,9 @@ export default function KocunPage() {
       </motion.div>
 
       {/* Weekly motivation messages */}
-      <motion.div variants={fadeInUp} className="bg-white rounded-2xl p-5 shadow-sm">
-        <h2 className="font-bold text-lg mb-4 flex items-center gap-2">
-          <MessageCircle size={20} className="text-accent" /> Haftalık Motivasyon
+      <motion.div variants={fadeInUp} className="bg-bg-card rounded-2xl p-5 border border-white/4">
+        <h2 className="font-display font-bold text-lg mb-4 flex items-center gap-2 text-text-primary">
+          <MessageCircle size={20} className="text-accent-green" /> Haftalik Motivasyon
         </h2>
         <div className="space-y-2">
           {weekGoals.map((goal, i) => (
@@ -117,23 +127,24 @@ export default function KocunPage() {
               transition={{ delay: i * 0.04 }}
               className={`p-3 rounded-xl text-sm transition-all ${
                 i === currentWeek
-                  ? "bg-accent/10 border-2 border-accent/20 font-semibold"
+                  ? "bg-accent-green/10 border-2 border-accent-green/20 font-semibold shadow-[0_0_20px_rgba(0,230,118,0.1)]"
                   : i < currentWeek
-                    ? "bg-gray-50 opacity-60"
-                    : "bg-gray-50"
+                    ? "bg-bg-secondary opacity-50"
+                    : "bg-bg-secondary"
               }`}
             >
-              <span className="text-primary font-bold">Hafta {i + 1}:</span> {goal}
-              {i === currentWeek && <span className="ml-2 text-xs text-accent">◀ Bu hafta</span>}
+              <span className="text-accent-blue font-bold">Hafta {i + 1}:</span>{" "}
+              <span className="text-text-secondary">{goal}</span>
+              {i === currentWeek && <span className="ml-2 text-xs text-accent-green">◀ Bu hafta</span>}
             </motion.div>
           ))}
         </div>
       </motion.div>
 
       {/* All quotes */}
-      <motion.div variants={fadeInUp} className="bg-white rounded-2xl p-5 shadow-sm">
-        <h2 className="font-bold text-lg mb-4 flex items-center gap-2">
-          <Lightbulb size={20} className="text-warning" /> Motivasyon Sözleri
+      <motion.div variants={fadeInUp} className="bg-bg-card rounded-2xl p-5 border border-white/4">
+        <h2 className="font-display font-bold text-lg mb-4 flex items-center gap-2 text-text-primary">
+          <Lightbulb size={20} className="text-accent-gold" /> Motivasyon Sozleri
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           {quotes.map((q, i) => (
@@ -142,10 +153,10 @@ export default function KocunPage() {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: i * 0.05 }}
-              className="bg-linear-to-br from-gray-50 to-primary/5 rounded-xl p-4 border border-gray-100"
+              className="glass-card rounded-xl p-4"
             >
-              <p className="italic text-sm text-gray-700">&ldquo;{q.q}&rdquo;</p>
-              <p className="text-xs text-gray-400 mt-2">— {q.a}</p>
+              <p className="italic text-sm text-text-secondary">&ldquo;{q.q}&rdquo;</p>
+              <p className="text-xs text-text-muted mt-2">&mdash; {q.a}</p>
             </motion.div>
           ))}
         </div>
