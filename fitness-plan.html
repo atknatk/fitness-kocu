@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>12 Haftalık Dönüşüm Programı</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',Tahoma,sans-serif;background:#0a0a0a;color:#e0e0e0;line-height:1.6}
+.header{background:linear-gradient(135deg,#1a1a2e,#16213e,#0f3460);padding:40px 20px;text-align:center;border-bottom:3px solid #e94560}
+.header h1{font-size:2.2em;color:#fff;margin-bottom:5px}
+.header p{color:#e94560;font-size:1.1em;font-weight:600}
+.stats{display:flex;justify-content:center;gap:30px;margin-top:20px;flex-wrap:wrap}
+.stat{background:rgba(233,69,96,0.15);border:1px solid #e94560;border-radius:10px;padding:12px 20px;text-align:center}
+.stat span{display:block;font-size:1.4em;font-weight:700;color:#e94560}
+.stat small{color:#aaa;font-size:0.85em}
+nav{background:#111;padding:10px 20px;display:flex;gap:10px;overflow-x:auto;position:sticky;top:0;z-index:100;border-bottom:1px solid #333}
+nav button{background:#1a1a2e;color:#ccc;border:1px solid #333;padding:8px 16px;border-radius:20px;cursor:pointer;white-space:nowrap;font-size:0.9em;transition:all 0.3s}
+nav button:hover,nav button.active{background:#e94560;color:#fff;border-color:#e94560}
+.container{max-width:900px;margin:0 auto;padding:20px}
+.section{display:none}
+.section.active{display:block}
+.card{background:#1a1a2e;border:1px solid #2a2a4a;border-radius:12px;padding:20px;margin-bottom:15px}
+.card h3{color:#e94560;margin-bottom:10px;font-size:1.15em}
+.card h4{color:#ff8a80;margin:12px 0 6px}
+table{width:100%;border-collapse:collapse;margin:10px 0}
+th,td{padding:8px 10px;text-align:left;border-bottom:1px solid #2a2a4a;font-size:0.9em}
+th{background:#16213e;color:#e94560;font-weight:600}
+tr:hover{background:rgba(233,69,96,0.05)}
+.day-tag{display:inline-block;background:#e94560;color:#fff;padding:3px 10px;border-radius:12px;font-size:0.8em;font-weight:600;margin-bottom:8px}
+.rest-tag{background:#4a90d9}
+.meal-time{color:#e94560;font-weight:700;font-size:0.95em}
+.tip{background:rgba(74,144,217,0.15);border-left:3px solid #4a90d9;padding:12px 15px;border-radius:0 8px 8px 0;margin:10px 0;font-size:0.9em}
+.motivation{background:linear-gradient(135deg,#1a1a2e,#2a1a3e);border:1px solid #e94560;border-radius:12px;padding:25px;text-align:center;margin:20px 0;font-style:italic;font-size:1.1em;color:#ff8a80}
+.phase-header{background:linear-gradient(90deg,#e94560,#0f3460);color:#fff;padding:15px 20px;border-radius:12px;margin-bottom:15px;font-size:1.2em;font-weight:700}
+.exercise-detail{margin:5px 0;padding:5px 0;border-bottom:1px dashed #2a2a4a}
+.exercise-detail:last-child{border-bottom:none}
+.sets{color:#4a90d9;font-weight:600}
+.print-btn{background:#e94560;color:#fff;border:none;padding:10px 25px;border-radius:8px;cursor:pointer;font-size:1em;margin:10px 5px}
+.print-btn:hover{background:#ff6b81}
+.progress-bar{height:8px;background:#2a2a4a;border-radius:4px;margin:10px 0}
+.progress-fill{height:100%;background:linear-gradient(90deg,#e94560,#ff8a80);border-radius:4px;transition:width 0.5s}
+.checklist label{display:block;padding:6px 0;cursor:pointer;font-size:0.9em}
+.checklist input{margin-right:8px;accent-color:#e94560}
+.macro-bar{display:flex;gap:10px;margin:10px 0;flex-wrap:wrap}
+.macro{flex:1;min-width:80px;text-align:center;padding:10px;border-radius:8px;background:#16213e}
+.macro span{display:block;font-size:1.3em;font-weight:700}
+.macro.prot span{color:#e94560}
+.macro.carb span{color:#4a90d9}
+.macro.fat span{color:#ffd93d}
+.macro.cal span{color:#6bcb77}
+.macro small{color:#888;font-size:0.8em}
+@media print{nav,.print-btn{display:none!important}.section{display:block!important}.header{padding:15px}}
+@media(max-width:600px){.header h1{font-size:1.5em}.stats{gap:10px}.stat{padding:8px 12px}}
+</style>
+</head>
+<body>
+
+<div class="header">
+<h1>💪 12 HAFTALIK DÖNÜŞÜM PROGRAMI</h1>
+<p>Hedef: Sıkı, Fit & Kaslı Görünüm</p>
+<div class="stats">
+<div class="stat"><span>53 kg</span><small>Başlangıç</small></div>
+<div class="stat"><span>50 kg</span><small>Hedef</small></div>
+<div class="stat"><span>165 cm</span><small>Boy</small></div>
+<div class="stat"><span>12 Hafta</span><small>Program</small></div>
+</div>
+</div>
+
+<nav id="nav">
+<button onclick="show('genel')" class="active">📋 Genel Bakış</button>
+<button onclick="show('beslenme')">🥗 Beslenme</button>
+<button onclick="show('h1')">Hafta 1</button>
+<button onclick="show('h2')">Hafta 2</button>
+<button onclick="show('h3')">Hafta 3</button>
+<button onclick="show('h4')">Hafta 4</button>
+<button onclick="show('h5')">Hafta 5</button>
+<button onclick="show('h6')">Hafta 6</button>
+<button onclick="show('h7')">Hafta 7</button>
+<button onclick="show('h8')">Hafta 8</button>
+<button onclick="show('h9')">Hafta 9</button>
+<button onclick="show('h10')">Hafta 10</button>
+<button onclick="show('h11')">Hafta 11</button>
+<button onclick="show('h12')">Hafta 12</button>
+</nav>
+
+<div class="container">
+
+<!-- GENEL BAKIŞ -->
+<div id="genel" class="section active">
+<div class="motivation">"Bugün başla. Yarın sana teşekkür edecek olan sen, bugünkü sensin." 🔥</div>
+
+<div class="card">
+<h3>📌 Program Özeti</h3>
+<p><strong>Günlük Rutinin:</strong> Sabah 05:00 kalkış → Gün boyu aktif beslenme → 18:00 Spor Salonu</p>
+<br>
+<table>
+<tr><th>Faz</th><th>Hafta</th><th>Odak</th><th>Antrenman</th></tr>
+<tr><td>🟢 Adaptasyon</td><td>1-4</td><td>Temel oluşturma, formları öğrenme</td><td>Haftada 3 gün Full Body</td></tr>
+<tr><td>🟡 İnşa</td><td>5-8</td><td>Kas geliştirme, güç artırma</td><td>Haftada 4 gün Upper/Lower</td></tr>
+<tr><td>🔴 Şekillendirme</td><td>9-12</td><td>Yağ yakımı, tanımlama</td><td>Haftada 5 gün PPL + HIIT</td></tr>
+</table>
+</div>
+
+<div class="card">
+<h3>📊 İlerleme Takibi</h3>
+<p>Her hafta Pazartesi sabahı aç karnına tartıl ve burayı güncelle:</p>
+<div style="margin:15px 0">
+<label>Hafta 1: <input type="number" id="w1" style="width:60px;background:#16213e;color:#fff;border:1px solid #333;padding:4px;border-radius:4px" placeholder="kg"> kg</label><br><br>
+<label>Hafta 4: <input type="number" id="w4" style="width:60px;background:#16213e;color:#fff;border:1px solid #333;padding:4px;border-radius:4px" placeholder="kg"> kg</label><br><br>
+<label>Hafta 8: <input type="number" id="w8" style="width:60px;background:#16213e;color:#fff;border:1px solid #333;padding:4px;border-radius:4px" placeholder="kg"> kg</label><br><br>
+<label>Hafta 12: <input type="number" id="w12" style="width:60px;background:#16213e;color:#fff;border:1px solid #333;padding:4px;border-radius:4px" placeholder="kg"> kg</label>
+</div>
+</div>
+
+<div class="card">
+<h3>⏰ Günlük Zaman Çizelgesi</h3>
+<table>
+<tr><td>05:00</td><td>Kalkış + 1 bardak ılık limonlu su</td></tr>
+<tr><td>06:00</td><td>Kahvaltı</td></tr>
+<tr><td>09:30</td><td>Ara öğün 1</td></tr>
+<tr><td>12:30</td><td>Öğle yemeği</td></tr>
+<tr><td>15:30</td><td>Ara öğün 2 (antrenman öncesi)</td></tr>
+<tr><td>17:30</td><td>Antrenman öncesi atıştırma</td></tr>
+<tr><td>18:00-19:15</td><td>🏋️ ANTRENMAN</td></tr>
+<tr><td>19:30</td><td>Akşam yemeği (antrenman sonrası)</td></tr>
+<tr><td>21:30</td><td>Son atıştırma (isteğe bağlı)</td></tr>
+</table>
+</div>
+
+<div class="tip">💡 <strong>Koç Notu:</strong> Her antrenman öncesi 5 dk dinamik ısınma, sonrası 5 dk germe yap. Su tüketimi günde en az 2-2.5 litre olmalı.</div>
+</div>
+
+<!-- BESLENME -->
+<div id="beslenme" class="section">
+<div class="phase-header">🥗 Günlük Beslenme Planı</div>
+
+<div class="card">
+<h3>📊 Günlük Makro Hedefleri</h3>
+<div class="macro-bar">
+<div class="macro cal"><span>1650</span><small>Kalori</small></div>
+<div class="macro prot"><span>95g</span><small>Protein</small></div>
+<div class="macro carb"><span>180g</span><small>Karbonhidrat</small></div>
+<div class="macro fat"><span>45g</span><small>Yağ</small></div>
+</div>
+<div class="tip">💡 Antrenman günleri 1700 kcal, dinlenme günleri 1550 kcal hedefle.</div>
+</div>
+
+<div class="card">
+<h3>☀️ Kahvaltı (06:00) — ~350 kcal</h3>
+<p><strong>Seçenek A:</strong> 2 yumurta (1 bütün + 1 beyaz) + 1 dilim tam buğday ekmek + domates-salatalık + 1 çay kaşığı zeytinyağı + yeşillik</p>
+<p><strong>Seçenek B:</strong> 1 kase yulaf (40g) + 150ml süt + 1 yemek kaşığı bal + 5-6 badem + muz yarısı</p>
+<p><strong>Seçenek C:</strong> 200g yoğurt + 2 yemek kaşığı yulaf + 1 avuç yaban mersini + 1 tatlı kaşığı bal</p>
+</div>
+
+<div class="card">
+<h3>🍎 Ara Öğün 1 (09:30) — ~150 kcal</h3>
+<p><strong>Seçenek A:</strong> 1 avuç badem (15g) + 1 küçük elma</p>
+<p><strong>Seçenek B:</strong> 150g yoğurt + 1 tatlı kaşığı bal</p>
+<p><strong>Seçenek C:</strong> 1 dilim tam buğday ekmek + 2 dilim beyaz peynir</p>
+</div>
+
+<div class="card">
+<h3>🍽️ Öğle Yemeği (12:30) — ~450 kcal</h3>
+<p><strong>Seçenek A:</strong> 150g ızgara tavuk göğsü + 1 kase bulgur pilavı (80g kuru) + bol yeşil salata + 1 tatlı kaşığı zeytinyağı</p>
+<p><strong>Seçenek B:</strong> 150g levrek (fırında/ızgara) + haşlanmış sebze (brokoli, havuç) + 100g esmer pirinç</p>
+<p><strong>Seçenek C:</strong> 150g somon + kinoa (80g kuru) + roka-domates salatası</p>
+</div>
+
+<div class="card">
+<h3>🍌 Ara Öğün 2 / Antrenman Öncesi (15:30) — ~200 kcal</h3>
+<p><strong>Seçenek A:</strong> 1 muz + 1 yemek kaşığı fıstık ezmesi</p>
+<p><strong>Seçenek B:</strong> 2 pişmiş yumurta beyazı + 1 dilim ekmek</p>
+<p><strong>Seçenek C:</strong> Protein smoothie: 200ml süt + 1 muz + 1 yemek kaşığı yulaf</p>
+</div>
+
+<div class="card">
+<h3>⚡ Antrenman Öncesi (17:30) — ~50 kcal</h3>
+<p>1 fincan yeşil çay veya siyah kahve + 3-4 hurma</p>
+</div>
+
+<div class="card">
+<h3>🥩 Akşam Yemeği / Antrenman Sonrası (19:30) — ~400 kcal</h3>
+<p><strong>Seçenek A:</strong> 150g antrikot (ızgara) + bol yeşil salata + 1 dilim ekmek</p>
+<p><strong>Seçenek B:</strong> 150g tavuk göğsü + fırında sebze (kabak, biber, patlıcan) + 80g makarna</p>
+<p><strong>Seçenek C:</strong> 150g somon/levrek + haşlanmış patates (1 orta boy) + salata</p>
+</div>
+
+<div class="card">
+<h3>🌙 Gece Atıştırma (21:30 — İsteğe Bağlı) — ~100 kcal</h3>
+<p><strong>Seçenek A:</strong> 150g yoğurt</p>
+<p><strong>Seçenek B:</strong> 200ml ılık süt + tarçın</p>
+<p><strong>Seçenek C:</strong> 10 badem</p>
+</div>
+
+<div class="card">
+<h3>💧 Günlük Su Hedefi</h3>
+<p>En az <strong>2.5 litre</strong> su — antrenman sırasında ekstra 500ml</p>
+<div class="checklist">
+<label><input type="checkbox"> Sabah kalkınca 1 bardak ılık limonlu su</label>
+<label><input type="checkbox"> Kahvaltıda 1 bardak</label>
+<label><input type="checkbox"> Öğlene kadar 500ml</label>
+<label><input type="checkbox"> Öğleden sonra 500ml</label>
+<label><input type="checkbox"> Antrenman sırasında 500ml</label>
+<label><input type="checkbox"> Akşam 500ml</label>
+</div>
+</div>
+
+<div class="tip">💡 <strong>Haftalık Alışveriş Listesi:</strong> Tavuk göğsü, levrek/somon, antrikot, yumurta, yoğurt, süt, yulaf, bulgur, esmer pirinç, kinoa, tam buğday ekmek, muz, elma, badem, hurma, brokoli, kabak, domates, salatalık, roka, biber, zeytinyağı, limon, bal, fıstık ezmesi, yeşil çay.</div>
+</div>
+
+<!-- HAFTA 1 -->
+<div id="h1" class="section">
+<div class="phase-header">🟢 HAFTA 1 — Başlangıç & Adaptasyon</div>
+<div class="motivation">"Her uzun yolculuk tek bir adımla başlar. Bu hafta o ilk adımın!" 💪</div>
+
+<div class="card">
+<h3>📋 Bu Hafta Özet</h3>
+<p>3 gün Full Body antrenman (Pazartesi - Çarşamba - Cuma). Hafif ağırlıklar, formu öğrenmeye odaklan.</p>
+<div class="progress-bar"><div class="progress-fill" style="width:8%"></div></div>
+<small>İlerleme: Hafta 1/12</small>
+</div>
+
+<div class="card">
+<h3><span class="day-tag">PAZARTESİ</span> Full Body A</h3>
+<p><strong>Isınma:</strong> 5 dk koşu bandı (hafif tempo) + dinamik germe</p>
+<table>
+<tr><th>Egzersiz</th><th>Set × Tekrar</th><th>Dinlenme</th><th>Notlar</th></tr>
+<tr><td>Goblet Squat (Dumbbell)</td><td>3 × 12</td><td>60 sn</td><td>Dumbbell göğüste, diz açısı 90°, sırt düz</td></tr>
+<tr><td>Dumbbell Bench Press</td><td>3 × 12</td><td>60 sn</td><td>Sırt düz bankta, dirsekler 45° açıda</td></tr>
+<tr><td>Lat Pulldown (Makine)</td><td>3 × 12</td><td>60 sn</td><td>Geniş tutuş, göğse çek, yavaş bırak</td></tr>
+<tr><td>Dumbbell Lunges</td><td>3 × 10 (her bacak)</td><td>60 sn</td><td>Büyük adım, arka diz neredeyse yere değsin</td></tr>
+<tr><td>Dumbbell Shoulder Press</td><td>3 × 12</td><td>60 sn</td><td>Oturarak, dirsekler 90° başla</td></tr>
+<tr><td>Plank</td><td>3 × 30 sn</td><td>45 sn</td><td>Karın sıkı, kalça düşmesin</td></tr>
+</table>
+<p><strong>Soğuma:</strong> 5 dk yürüyüş + statik germe</p>
+</div>
+
+<div class="card">
+<h3><span class="day-tag rest-tag">SALI</span> Dinlenme</h3>
+<p>30 dk tempolu yürüyüş veya hafif yoga. Aktif dinlenme günü.</p>
+</div>
+
+<div class="card">
+<h3><span class="day-tag">ÇARŞAMBA</span> Full Body B</h3>
+<p><strong>Isınma:</strong> 5 dk eliptik bisiklet + dinamik germe</p>
+<table>
+<tr><th>Egzersiz</th><th>Set × Tekrar</th><th>Dinlenme</th><th>Notlar</th></tr>
+<tr><td>Leg Press (Makine)</td><td>3 × 12</td><td>60 sn</td><td>Ayaklar omuz genişliğinde, dizleri kilitleme</td></tr>
+<tr><td>Cable Row (Oturarak)</td><td>3 × 12</td><td>60 sn</td><td>Göğsü dik tut, kürek kemiklerini sık</td></tr>
+<tr><td>Dumbbell Chest Fly</td><td>3 × 12</td><td>60 sn</td><td>Hafif dirsek bükük, yavaş aç-kapa</td></tr>
+<tr><td>Romanian Deadlift (Dumbbell)</td><td>3 × 12</td><td>60 sn</td><td>Dumbbell bacak önünde, kalçadan eğil, sırt düz</td></tr>
+<tr><td>Lateral Raise</td><td>3 × 12</td><td>45 sn</td><td>Hafif ağırlık, omuz hizasına kadar kaldır</td></tr>
+<tr><td>Bicycle Crunch</td><td>3 × 15 (her taraf)</td><td>45 sn</td><td>Yavaş ve kontrollü, dirsek-diz buluşsun</td></tr>
+</table>
+<p><strong>Soğuma:</strong> 5 dk yürüyüş + statik germe</p>
+</div>
+
+<div class="card">
+<h3><span class="day-tag rest-tag">PERŞEMBE</span> Dinlenme</h3>
+<p>30 dk tempolu yürüyüş veya hafif stretching.</p>
+</div>
+
+<div class="card">
+<h3><span class="day-tag">CUMA</span> Full Body C</h3>
+<p><strong>Isınma:</strong> 5 dk koşu bandı + dinamik germe</p>
+<table>
+<tr><th>Egzersiz</th><th>Set × Tekrar</th><th>Dinlenme</th><th>Notlar</th></tr>
+<tr><td>Sumo Squat (Dumbbell)</td><td>3 × 12</td><td>60 sn</td><td>Geniş duruş, ayak uçları dışa, iç bacak çalışır</td></tr>
+<tr><td>Push-up (Dizde olabilir)</td><td>3 × 10</td><td>60 sn</td><td>Göğüs yere yaklaşsın, sırt düz</td></tr>
+<tr><td>Dumbbell Single Arm Row</td><td>3 × 10 (her kol)</td><td>60 sn</td><td>Bir el ve diz bankta, dirseği tavana çek</td></tr>
+<tr><td>Hip Thrust (Barbell/Dumbbell)</td><td>3 × 12</td><td>60 sn</td><td>Sırt bankın kenarında, kalçayı sık, yukarı it</td></tr>
+<tr><td>Tricep Pushdown (Kablo)</td><td>3 × 12</td><td>45 sn</td><td>Dirsekler sabit, sadece ön kol hareket etsin</td></tr>
+<tr><td>Leg Raise (Yerde)</td><td>3 × 12</td><td>45 sn</td><td>Bel yerden kalkmasın, bacaklar düz</td></tr>
+</table>
+<p><strong>Soğuma:</strong> 5 dk yürüyüş + statik germe</p>
+</div>
+
+<div class="card">
+<h3><span class="day-tag rest-tag">CUMARTESİ - PAZAR</span> Dinlenme</h3>
+<p>Cumartesi: 40 dk doğa yürüyüşü veya bisiklet. Pazar: Tam dinlenme, bol uyku.</p>
+</div>
+
+<div class="card">
+<h3>✅ Hafta 1 Checklist</h3>
+<div class="checklist">
+<label><input type="checkbox"> Pazartesi antrenmanını tamamladım</label>
+<label><input type="checkbox"> Çarşamba antrenmanını tamamladım</label>
+<label><input type="checkbox"> Cuma antrenmanını tamamladım</label>
+<label><input type="checkbox"> Günlük su hedefime ulaştım (min 5/7 gün)</label>
+<label><input type="checkbox"> Beslenme planına uydum (min 5/7 gün)</label>
+<label><input type="checkbox"> Haftasonları aktif dinlenme yaptım</label>
+</div>
+</div>
+</div>
+
+<!-- HAFTA 2 -->
+<div id="h2" class="section">
+<div class="phase-header">🟢 HAFTA 2 — Alışma & Güçlenme</div>
+<div class="motivation">"İkinci hafta en zor haftadır. Bunu aşarsan, geri dönüş yok!" 🔥</div>
+
+<div class="card">
+<h3>📋 Bu Hafta Değişiklikler</h3>
+<p>Aynı program, ama bu hafta <strong>ağırlıkları hafifçe artır</strong> (1-2 kg). Formun düzgünse artır, değilse aynı kal.</p>
+<div class="progress-bar"><div class="progress-fill" style="width:17%"></div></div>
+<small>İlerleme: Hafta 2/12</small>
+</div>
+
+<div class="card">
+<h3><span class="day-tag">PAZARTESİ</span> Full Body A — Seviye ↑</h3>
+<table>
+<tr><th>Egzersiz</th><th>Set × Tekrar</th><th>Dinlenme</th><th>Notlar</th></tr>
+<tr><td>Goblet Squat</td><td>3 × 14</td><td>60 sn</td><td>Geçen haftadan 1-2 kg fazla</td></tr>
+<tr><td>Dumbbell Bench Press</td><td>3 × 14</td><td>60 sn</td><td>Kontrollü tempo: 2 sn indir, 1 sn kaldır</td></tr>
+<tr><td>Lat Pulldown</td><td>3 × 14</td><td>60 sn</td><td>Son 2 tekrarda zorlanmalısın</td></tr>
+<tr><td>Dumbbell Lunges</td><td>3 × 12 (her bacak)</td><td>60 sn</td><td>Adımı biraz daha büyüt</td></tr>
+<tr><td>Dumbbell Shoulder Press</td><td>3 × 14</td><td>60 sn</td><td>Nefes: kaldırırken ver, indirirken al</td></tr>
+<tr><td>Plank</td><td>3 × 40 sn</td><td>45 sn</td><td>10 sn artırdık!</td></tr>
+</table>
+</div>
+
+<div class="card">
+<h3><span class="day-tag">ÇARŞAMBA</span> Full Body B — Seviye ↑</h3>
+<table>
+<tr><th>Egzersiz</th><th>Set × Tekrar</th><th>Dinlenme</th><th>Notlar</th></tr>
+<tr><td>Leg Press</td><td>3 × 14</td><td>60 sn</td><td>Ağırlığı 5 kg artır</td></tr>
+<tr><td>Cable Row</td><td>3 × 14</td><td>60 sn</td><td>Kürek kemiklerini 1 sn tut</td></tr>
+<tr><td>Dumbbell Chest Fly</td><td>3 × 14</td><td>60 sn</td><td>Germeyi hisset, yavaş aç</td></tr>
+<tr><td>Romanian Deadlift</td><td>3 × 14</td><td>60 sn</td><td>Hamstringleri hissetmelisin</td></tr>
+<tr><td>Lateral Raise</td><td>3 × 14</td><td>45 sn</td><td>Yavaş tempo, omuzları hisset</td></tr>
+<tr><td>Bicycle Crunch</td><td>3 × 18 (her taraf)</td><td>45 sn</td><td>3 tekrar artırdık</td></tr>
+</table>
+</div>
+
+<div class="card">
+<h3><span class="day-tag">CUMA</span> Full Body C — Seviye ↑</h3>
+<table>
+<tr><th>Egzersiz</th><th>Set × Tekrar</th><th>Dinlenme</th><th>Notlar</th></tr>
+<tr><td>Sumo Squat</td><td>3 × 14</td><td>60 sn</td><td>İç bacak yanmalı</td></tr>
+<tr><td>Push-up</td><td>3 × 12</td><td>60 sn</td><td>Dizde yapıyorsan, normal denemeye başla</td></tr>
+<tr><td>Single Arm Row</td><td>3 × 12 (her kol)</td><td>60 sn</td><td>1-2 kg artır</td></tr>
+<tr><td>Hip Thrust</td><td>3 × 14</td><td>60 sn</td><td>Yukarıda 2 sn sık ve tut</td></tr>
+<tr><td>Tricep Pushdown</td><td>3 × 14</td><td>45 sn</td><td>Hafif ağırlık artır</td></tr>
+<tr><td>Leg Raise</td><td>3 × 14</td><td>45 sn</td><td>Yavaş indir, bel yerden kalkmasın</td></tr>
+</table>
+</div>
+
+<div class="card">
+<h3>✅ Hafta 2 Checklist</h3>
+<div class="checklist">
+<label><input type="checkbox"> Ağırlıkları hafifçe artırdım</label>
+<label><input type="checkbox"> 3 antrenmanı tamamladım</label>
+<label><input type="checkbox"> Beslenme planına uydum</label>
+<label><input type="checkbox"> Günlük 2.5L su içtim</label>
+<label><input type="checkbox"> Kas ağrısı varsa foam roller kullandım</label>
+</div>
+</div>
+</div>
+
+<!-- HAFTA 3 -->
+<div id="h3" class="section">
+<div class="phase-header">🟢 HAFTA 3 — Tempo Artırma</div>
+<div class="motivation">"3 hafta geride kaldı demek, yeni bir alışkanlık doğuyor demek!" ⚡</div>
+
+<div class="card">
+<h3>📋 Bu Hafta Yenilik</h3>
+<p>Aynı hareketler, ama <strong>4 set</strong>'e çıkıyoruz ve her antrenmanın sonuna 10 dk <strong>kardiyo</strong> ekliyoruz (koşu bandı veya eliptik, orta tempo).</p>
+<div class="progress-bar"><div class="progress-fill" style="width:25%"></div></div>
+<small>İlerleme: Hafta 3/12</small>
+</div>
+
+<div class="card">
+<h3><span class="day-tag">PAZARTESİ</span> Full Body A</h3>
+<table>
+<tr><th>Egzersiz</th><th>Set × Tekrar</th><th>Dinlenme</th></tr>
+<tr><td>Goblet Squat</td><td><strong>4</strong> × 12</td><td>60 sn</td></tr>
+<tr><td>Dumbbell Bench Press</td><td><strong>4</strong> × 12</td><td>60 sn</td></tr>
+<tr><td>Lat Pulldown</td><td><strong>4</strong> × 12</td><td>60 sn</td></tr>
+<tr><td>Walking Lunges</td><td><strong>4</strong> × 10 (her bacak)</td><td>60 sn</td></tr>
+<tr><td>Shoulder Press</td><td><strong>4</strong> × 12</td><td>60 sn</td></tr>
+<tr><td>Plank</td><td>3 × 45 sn</td><td>45 sn</td></tr>
+</table>
+<p>➕ <strong>Finisher:</strong> 10 dk koşu bandı (6-7 km/h tempo)</p>
+</div>
+
+<div class="card">
+<h3><span class="day-tag">ÇARŞAMBA</span> Full Body B</h3>
+<table>
+<tr><th>Egzersiz</th><th>Set × Tekrar</th><th>Dinlenme</th></tr>
+<tr><td>Leg Press</td><td><strong>4</strong> × 12</td><td>60 sn</td></tr>
+<tr><td>Cable Row</td><td><strong>4</strong> × 12</td><td>60 sn</td></tr>
+<tr><td>Chest Fly</td><td><strong>4</strong> × 12</td><td>60 sn</td></tr>
+<tr><td>Romanian Deadlift</td><td><strong>4</strong> × 12</td><td>60 sn</td></tr>
+<tr><td>Lateral Raise</td><td><strong>4</strong> × 12</td><td>45 sn</td></tr>
+<tr><td>Russian Twist</td><td>3 × 20 (toplam)</td><td>45 sn</td></tr>
+</table>
+<p>➕ <strong>Finisher:</strong> 10 dk eliptik (orta direnç)</p>
+</div>
+
+<div class="card">
+<h3><span class="day-tag">CUMA</span> Full Body C</h3>
+<table>
+<tr><th>Egzersiz</th><th>Set × Tekrar</th><th>Dinlenme</th></tr>
+<tr><td>Sumo Squat</td><td><strong>4</strong> × 12</td><td>60 sn</td></tr>
+<tr><td>Push-up</td><td><strong>4</strong> × 10-12</td><td>60 sn</td></tr>
+<tr><td>Single Arm Row</td><td><strong>4</strong> × 10 (her kol)</td><td>60 sn</td></tr>
+<tr><td>Hip Thrust</td><td><strong>4</strong> × 12</td><td>60 sn</td></tr>
+<tr><td>Tricep Pushdown</td><td><strong>4</strong> × 12</td><td>45 sn</td></tr>
+<tr><td>Dead Bug</td><td>3 × 10 (her taraf)</td><td>45 sn</td></tr>
+</table>
+<p>➕ <strong>Finisher:</strong> 10 dk kürek makinesi (orta tempo)</p>
+</div>
+
+<div class="card">
+<h3>✅ Hafta 3 Checklist</h3>
+<div class="checklist">
+<label><input type="checkbox"> 4 sete geçtim</label>
+<label><input type="checkbox"> Her antrenmana 10 dk kardiyo ekledim</label>
+<label><input type="checkbox"> 3 antrenmanı tamamladım</label>
+<label><input type="checkbox"> Beslenme planına uydum</label>
+<label><input type="checkbox"> Vücut ölçülerimi aldım (bel, kalça, kol)</label>
+</div>
+</div>
+</div>
+
+<!-- HAFTA 4 -->
+<div id="h4" class="section">
+<div class="phase-header">🟢 HAFTA 4 — Faz 1 Finali (Deload Hafta)</div>
+<div class="motivation">"1 ayı tamamladın! Vücudun değişmeye başladı, devam et!" 🏆</div>
+
+<div class="card">
+<h3>📋 Deload Haftası Nedir?</h3>
+<p>Bu hafta ağırlıkları <strong>%20 azalt</strong>, tekrar sayılarını koru. Vücudun toparlanıp gelecek faza hazırlanması için gerekli. Tembellik değil, strateji!</p>
+<div class="progress-bar"><div class="progress-fill" style="width:33%"></div></div>
+<small>İlerleme: Hafta 4/12 — Faz 1 Tamamlanıyor!</small>
+</div>
+
+<div class="card">
+<h3><span class="day-tag">PAZARTESİ</span> Full Body A — Hafif</h3>
+<p>Hafta 3 ile aynı hareketler, <strong>3 set × 12 tekrar</strong>, ağırlıklar %20 az. Forma odaklan.</p>
+</div>
+
+<div class="card">
+<h3><span class="day-tag">ÇARŞAMBA</span> Full Body B — Hafif</h3>
+<p>Hafta 3 ile aynı hareketler, <strong>3 set × 12 tekrar</strong>, ağırlıklar %20 az. Nefes ve form.</p>
+</div>
+
+<div class="card">
+<h3><span class="day-tag">CUMA</span> Full Body C — Hafif</h3>
+<p>Hafta 3 ile aynı hareketler, <strong>3 set × 12 tekrar</strong>, ağırlıklar %20 az. + 15 dk hafif kardiyo.</p>
+</div>
+
+<div class="card">
+<h3>📸 FAZ 1 DEĞERLENDİRME</h3>
+<p>Bu hafta sonu yapılacaklar:</p>
+<div class="checklist">
+<label><input type="checkbox"> İlerleme fotoğrafı çek (ön, yan, arka)</label>
+<label><input type="checkbox"> Tartıl ve kaydet</label>
+<label><input type="checkbox"> Bel, kalça, kol ölçümlerini al</label>
+<label><input type="checkbox"> Kullandığın ağırlıkları not et</label>
+<label><input type="checkbox"> Kendini nasıl hissettiğini yaz</label>
+</div>
+</div>
+</div>
+
+<!-- HAFTA 5 -->
+<div id="h5" class="section">
+<div class="phase-header">🟡 HAFTA 5 — Faz 2 Başlangıç: Upper/Lower Split</div>
+<div class="motivation">"Artık yeni birisin. Bu faz seni daha güçlü yapacak!" 💥</div>
+
+<div class="card">
+<h3>📋 Faz 2: Ne Değişiyor?</h3>
+<p>Haftada <strong>4 gün</strong> antrenman: Pazartesi-Salı (antrenman), Çarşamba (dinlenme), Perşembe-Cuma (antrenman). Üst/Alt vücut bölünmesi.</p>
+<div class="progress-bar"><div class="progress-fill" style="width:42%"></div></div>
+<small>İlerleme: Hafta 5/12</small>
+</div>
+
+<div class="card">
+<h3><span class="day-tag">PAZARTESİ</span> Üst Vücut A</h3>
+<table>
+<tr><th>Egzersiz</th><th>Set × Tekrar</th><th>Dinlenme</th><th>Notlar</th></tr>
+<tr><td>Dumbbell Bench Press</td><td>4 × 10</td><td>75 sn</td><td>Ağırlık artır, kontrollü indir</td></tr>
+<tr><td>Bent Over Barbell Row</td><td>4 × 10</td><td>75 sn</td><td>Sırt düz, dirseği tavana çek</td></tr>
+<tr><td>Dumbbell Shoulder Press</td><td>3 × 12</td><td>60 sn</td><td>Oturarak yap</td></tr>
+<tr><td>Cable Face Pull</td><td>3 × 15</td><td>45 sn</td><td>Omuz sağlığı için harika</td></tr>
+<tr><td>Bicep Curl (Dumbbell)</td><td>3 × 12</td><td>45 sn</td><td>Dirsek sabit, yavaş indir</td></tr>
+<tr><td>Tricep Overhead Extension</td><td>3 × 12</td><td>45 sn</td><td>Tek dumbbell, iki elle</td></tr>
+</table>
+</div>
+
+<div class="card">
+<h3><span class="day-tag">SALI</span> Alt Vücut A</h3>
+<table>
+<tr><th>Egzersiz</th><th>Set × Tekrar</th><th>Dinlenme</th><th>Notlar</th></tr>
+<tr><td>Barbell Squat (veya Smith)</td><td>4 × 10</td><td>90 sn</td><td>Bar omuzda, derin çömel</td></tr>
+<tr><td>Romanian Deadlift (Barbell)</td><td>4 × 10</td><td>75 sn</td><td>Hamstring gerginliğini hisset</td></tr>
+<tr><td>Leg Press</td><td>3 × 12</td><td>75 sn</td><td>Ayaklar yüksekte = daha çok kalça</td></tr>
+<tr><td>Leg Curl (Makine)</td><td>3 × 12</td><td>60 sn</td><td>Yavaş bırak, kas bağlantısı kur</td></tr>
+<tr><td>Calf Raise (Makine)</td><td>4 × 15</td><td>45 sn</td><td>Yukarıda 1 sn tut</td></tr>
+<tr><td>Plank + Side Plank</td><td>3 × (30+15+15 sn)</td><td>45 sn</td><td>Düz + sağ + sol</td></tr>
+</table>
+</div>
+
+<div class="card">
+<h3><span class="day-tag rest-tag">ÇARŞAMBA</span> Dinlenme</h3>
+<p>30 dk yürüyüş + foam roller ile toparlanma.</p>
+</div>
+
+<div class="card">
+<h3><span class="day-tag">PERŞEMBE</span> Üst Vücut B</h3>
+<table>
+<tr><th>Egzersiz</th><th>Set × Tekrar</th><th>Dinlenme</th><th>Notlar</th></tr>
+<tr><td>Incline Dumbbell Press</td><td>4 × 10</td><td>75 sn</td><td>Bank 30° eğik, üst göğüs odak</td></tr>
+<tr><td>Lat Pulldown (Dar Tutuş)</td><td>4 × 10</td><td>75 sn</td><td>V-bar kullan, sırt genişliği</td></tr>
+<tr><td>Lateral Raise</td><td>3 × 15</td><td>45 sn</td><td>Hafif ağırlık, yüksek tekrar</td></tr>
+<tr><td>Rear Delt Fly (Dumbbell)</td><td>3 × 12</td><td>45 sn</td><td>Eğil, kolları yana aç</td></tr>
+<tr><td>Hammer Curl</td><td>3 × 12</td><td>45 sn</td><td>Avuç içi içe bakacak</td></tr>
+<tr><td>Tricep Kickback</td><td>3 × 12</td><td>45 sn</td><td>Dirsek sabit, kolu arkaya uzat</td></tr>
+</table>
+</div>
+
+<div class="card">
+<h3><span class="day-tag">CUMA</span> Alt Vücut B</h3>
+<table>
+<tr><th>Egzersiz</th><th>Set × Tekrar</th><th>Dinlenme</th><th>Notlar</th></tr>
+<tr><td>Hip Thrust (Barbell)</td><td>4 × 10</td><td>75 sn</td><td>Ağırlık artır, kalçayı sık</td></tr>
+<tr><td>Bulgarian Split Squat</td><td>3 × 10 (her bacak)</td><td>75 sn</td><td>Arka ayak bankta, tek bacak squat</td></tr>
+<tr><td>Sumo Deadlift</td><td>4 × 10</td><td>75 sn</td><td>Geniş duruş, iç bacak + kalça</td></tr>
+<tr><td>Leg Extension (Makine)</td><td>3 × 12</td><td>60 sn</td><td>Yukarıda 1 sn sık</td></tr>
+<tr><td>Seated Calf Raise</td><td>4 × 15</td><td>45 sn</td><td>Yavaş tempo</td></tr>
+<tr><td>Hanging Leg Raise</td><td>3 × 10</td><td>45 sn</td><td>Yapamıyorsan diz çekerek yap</td></tr>
+</table>
+</div>
+
+<div class="card">
+<h3>✅ Hafta 5 Checklist</h3>
+<div class="checklist">
+<label><input type="checkbox"> 4 antrenmanı tamamladım</label>
+<label><input type="checkbox"> Yeni hareketlerin formunu öğrendim</label>
+<label><input type="checkbox"> Beslenme planına uydum</label>
+<label><input type="checkbox"> Protein alımıma dikkat ettim (95g/gün)</label>
+</div>
+</div>
+</div>
+
+<!-- HAFTA 6 -->
+<div id="h6" class="section">
+<div class="phase-header">🟡 HAFTA 6 — Güç Artışı</div>
+<div class="motivation">"Aynaya baktığında farkı görmeye başladın mı? Devam!" 🪞</div>
+
+<div class="card">
+<h3>📋 Bu Hafta</h3>
+<p>Hafta 5 ile aynı program. Ağırlıkları <strong>%5-10 artır</strong>. Set arası dinlenmeyi 5 sn kısalt.</p>
+<div class="progress-bar"><div class="progress-fill" style="width:50%"></div></div>
+<small>İlerleme: Hafta 6/12 — Yarı yoldayız! 🎯</small>
+</div>
+
+<div class="tip">💡 <strong>Koç Notu:</strong> Bu hafta her antrenmanın sonuna 10 dk LISS kardiyo ekle (düşük tempolu koşu bandı veya bisiklet). Yağ yakımını hızlandırır.</div>
+
+<div class="card">
+<h3>Program Hafta 5 ile Aynı — Değişiklikler:</h3>
+<table>
+<tr><th>Değişiklik</th><th>Detay</th></tr>
+<tr><td>Ağırlık</td><td>Her harekette %5-10 artır</td></tr>
+<tr><td>Dinlenme</td><td>75 sn → 70 sn, 60 sn → 55 sn</td></tr>
+<tr><td>Kardiyo</td><td>Her antrenman sonuna 10 dk ekle</td></tr>
+<tr><td>Tempo</td><td>İndirme fazını 3 saniyeye yavaşlat</td></tr>
+</table>
+</div>
+</div>
+
+<!-- HAFTA 7 -->
+<div id="h7" class="section">
+<div class="phase-header">🟡 HAFTA 7 — Drop Set Haftası</div>
+<div class="motivation">"Comfort zone'un dışında büyüme başlar. Bu hafta limitlerini zorla!" 🔥</div>
+
+<div class="card">
+<h3>📋 Bu Hafta Yenilik: Drop Set</h3>
+<p>Her antrenmanın <strong>son hareketinde</strong> drop set uygula: Normal seti bitir → ağırlığı %30 azalt → yine bitene kadar devam et.</p>
+<div class="progress-bar"><div class="progress-fill" style="width:58%"></div></div>
+</div>
+
+<div class="card">
+<h3>Program Hafta 5-6 ile Aynı — Ekstra:</h3>
+<table>
+<tr><th>Gün</th><th>Drop Set Hareketi</th></tr>
+<tr><td>Pazartesi (Üst A)</td><td>Tricep Extension — son set drop set</td></tr>
+<tr><td>Salı (Alt A)</td><td>Leg Curl — son set drop set</td></tr>
+<tr><td>Perşembe (Üst B)</td><td>Lateral Raise — son set drop set</td></tr>
+<tr><td>Cuma (Alt B)</td><td>Leg Extension — son set drop set</td></tr>
+</table>
+</div>
+
+<div class="card">
+<h3>✅ Hafta 7 Checklist</h3>
+<div class="checklist">
+<label><input type="checkbox"> 4 antrenmanı tamamladım</label>
+<label><input type="checkbox"> Drop set uyguladım</label>
+<label><input type="checkbox"> 10 dk kardiyo ekledim</label>
+<label><input type="checkbox"> Beslenmeme dikkat ettim</label>
+</div>
+</div>
+</div>
+
+<!-- HAFTA 8 -->
+<div id="h8" class="section">
+<div class="phase-header">🟡 HAFTA 8 — Faz 2 Finali (Deload)</div>
+<div class="motivation">"2 ay geride kaldı! Aynaya bak — o kişi 8 hafta önceki sen değil!" 💎</div>
+
+<div class="card">
+<h3>📋 Deload Haftası</h3>
+<p>Ağırlıkları <strong>%20 azalt</strong>, program aynı. Vücut bir sonraki yoğun faza hazırlanıyor.</p>
+<div class="progress-bar"><div class="progress-fill" style="width:67%"></div></div>
+<small>İlerleme: Hafta 8/12 — Faz 2 Tamamlanıyor!</small>
+</div>
+
+<div class="card">
+<h3>📸 FAZ 2 DEĞERLENDİRME</h3>
+<div class="checklist">
+<label><input type="checkbox"> İlerleme fotoğrafı çek</label>
+<label><input type="checkbox"> Tartıl ve kaydet</label>
+<label><input type="checkbox"> Ölçümlerini al (bel, kalça, kol, bacak)</label>
+<label><input type="checkbox"> En yüksek ağırlıklarını not et</label>
+<label><input type="checkbox"> Faz 1 fotoğraflarıyla karşılaştır</label>
+</div>
+</div>
+</div>
+
+<!-- HAFTA 9 -->
+<div id="h9" class="section">
+<div class="phase-header">🔴 HAFTA 9 — Faz 3: Şekillendirme Başlıyor!</div>
+<div class="motivation">"Son 4 hafta! Burası kası tanımladığın, yağı yaktığın yer!" 🔥🔥🔥</div>
+
+<div class="card">
+<h3>📋 Faz 3: Ne Değişiyor?</h3>
+<p>Haftada <strong>5 gün</strong>: Push - Pull - Legs - Üst Vücut - HIIT+Core. Yüksek tekrar, kısa dinlenme, süperset'ler.</p>
+<div class="progress-bar"><div class="progress-fill" style="width:75%"></div></div>
+</div>
+
+<div class="card">
+<h3><span class="day-tag">PAZARTESİ</span> PUSH (Göğüs + Omuz + Tricep)</h3>
+<table>
+<tr><th>Egzersiz</th><th>Set × Tekrar</th><th>Dinlenme</th></tr>
+<tr><td>Dumbbell Bench Press</td><td>4 × 10</td><td>60 sn</td></tr>
+<tr><td>Incline Dumbbell Fly</td><td>3 × 12</td><td>45 sn</td></tr>
+<tr><td>Shoulder Press (Dumbbell)</td><td>4 × 10</td><td>60 sn</td></tr>
+<tr><td>Lateral Raise + Front Raise <em>(süperset)</em></td><td>3 × 12+12</td><td>45 sn</td></tr>
+<tr><td>Tricep Pushdown + Dips <em>(süperset)</em></td><td>3 × 12+10</td><td>45 sn</td></tr>
+</table>
+<p>➕ 10 dk koşu bandı interval (1 dk hızlı / 1 dk yavaş)</p>
+</div>
+
+<div class="card">
+<h3><span class="day-tag">SALI</span> PULL (Sırt + Bicep)</h3>
+<table>
+<tr><th>Egzersiz</th><th>Set × Tekrar</th><th>Dinlenme</th></tr>
+<tr><td>Lat Pulldown (Geniş)</td><td>4 × 10</td><td>60 sn</td></tr>
+<tr><td>Cable Row</td><td>4 × 10</td><td>60 sn</td></tr>
+<tr><td>Single Arm Dumbbell Row</td><td>3 × 10 (her kol)</td><td>60 sn</td></tr>
+<tr><td>Face Pull</td><td>3 × 15</td><td>45 sn</td></tr>
+<tr><td>Bicep Curl + Hammer Curl <em>(süperset)</em></td><td>3 × 12+12</td><td>45 sn</td></tr>
+</table>
+<p>➕ 10 dk kürek makinesi interval</p>
+</div>
+
+<div class="card">
+<h3><span class="day-tag">ÇARŞAMBA</span> LEGS (Bacak + Kalça)</h3>
+<table>
+<tr><th>Egzersiz</th><th>Set × Tekrar</th><th>Dinlenme</th></tr>
+<tr><td>Barbell Squat</td><td>4 × 10</td><td>90 sn</td></tr>
+<tr><td>Hip Thrust</td><td>4 × 10</td><td>75 sn</td></tr>
+<tr><td>Bulgarian Split Squat</td><td>3 × 10 (her bacak)</td><td>60 sn</td></tr>
+<tr><td>Leg Curl + Leg Extension <em>(süperset)</em></td><td>3 × 12+12</td><td>60 sn</td></tr>
+<tr><td>Calf Raise</td><td>4 × 15</td><td>45 sn</td></tr>
+</table>
+</div>
+
+<div class="card">
+<h3><span class="day-tag rest-tag">PERŞEMBE</span> Dinlenme</h3>
+<p>Aktif toparlanma: 30 dk yürüyüş + stretching + foam roller.</p>
+</div>
+
+<div class="card">
+<h3><span class="day-tag">CUMA</span> Üst Vücut (Hafif Yüksek Tekrar)</h3>
+<table>
+<tr><th>Egzersiz</th><th>Set × Tekrar</th><th>Dinlenme</th></tr>
+<tr><td>Push-up</td><td>3 × max</td><td>60 sn</td></tr>
+<tr><td>Dumbbell Row</td><td>3 × 15</td><td>45 sn</td></tr>
+<tr><td>Arnold Press</td><td>3 × 12</td><td>45 sn</td></tr>
+<tr><td>Cable Fly</td><td>3 × 15</td><td>45 sn</td></tr>
+<tr><td>Bicep + Tricep <em>(süperset)</em></td><td>3 × 15+15</td><td>45 sn</td></tr>
+</table>
+</div>
+
+<div class="card">
+<h3><span class="day-tag">CUMARTESİ</span> HIIT + Core</h3>
+<p><strong>HIIT Devresi</strong> (3 tur, her hareket 40 sn çalış / 20 sn dinlen):</p>
+<table>
+<tr><th>#</th><th>Hareket</th></tr>
+<tr><td>1</td><td>Jumping Jack</td></tr>
+<tr><td>2</td><td>Mountain Climber</td></tr>
+<tr><td>3</td><td>Squat Jump</td></tr>
+<tr><td>4</td><td>Burpee</td></tr>
+<tr><td>5</td><td>High Knees</td></tr>
+</table>
+<p>Turlar arası 2 dk dinlenme.</p>
+<p><strong>Core:</strong> Plank 3×45sn + Bicycle Crunch 3×20 + Leg Raise 3×15 + Russian Twist 3×20</p>
+</div>
+</div>
+
+<!-- HAFTA 10 -->
+<div id="h10" class="section">
+<div class="phase-header">🔴 HAFTA 10 — Yoğunluk Artışı</div>
+<div class="motivation">"Son 3 hafta! Her damla ter, hedefe bir adım daha yakın!" 💧</div>
+
+<div class="card">
+<h3>📋 Bu Hafta Hafta 9 ile Aynı Program</h3>
+<p>Değişiklikler:</p>
+<div class="progress-bar"><div class="progress-fill" style="width:83%"></div></div>
+<table>
+<tr><th>Değişiklik</th><th>Detay</th></tr>
+<tr><td>Ağırlık</td><td>%5-10 artır</td></tr>
+<tr><td>HIIT</td><td>40 sn çalış / 15 sn dinlen (dinlenme azaldı!)</td></tr>
+<tr><td>Süperset dinlenme</td><td>45 sn → 30 sn</td></tr>
+<tr><td>Kardiyo</td><td>Interval süresini 12 dk'ya çıkar</td></tr>
+</table>
+</div>
+</div>
+
+<!-- HAFTA 11 -->
+<div id="h11" class="section">
+<div class="phase-header">🔴 HAFTA 11 — Zirve Haftası</div>
+<div class="motivation">"Bu senden çıkacak en yoğun hafta. Sonrası zafer!" ⚡⚡</div>
+
+<div class="card">
+<h3>📋 En Yoğun Hafta</h3>
+<p>Hafta 9 programı + şu ekstralar:</p>
+<div class="progress-bar"><div class="progress-fill" style="width:92%"></div></div>
+<table>
+<tr><th>Değişiklik</th><th>Detay</th></tr>
+<tr><td>Son set</td><td>Her harekette son sette bitene kadar yap (failure)</td></tr>
+<tr><td>HIIT</td><td>4 tur (3'ten artırdık)</td></tr>
+<tr><td>Drop set</td><td>Her antrenmanın son 2 hareketinde uygula</td></tr>
+<tr><td>Kardiyo</td><td>15 dk interval</td></tr>
+</table>
+</div>
+
+<div class="tip">💡 <strong>Koç Notu:</strong> Bu hafta çok yorulacaksın, uyku ve beslenmeye ekstra dikkat et. 8 saat uyku şart! Protein alımını 100g'a çıkar.</div>
+</div>
+
+<!-- HAFTA 12 -->
+<div id="h12" class="section">
+<div class="phase-header">🔴 HAFTA 12 — FİNAL & KUTLAMA!</div>
+<div class="motivation">"12 hafta önce hayal ettiğin kişi, şimdi aynada sana bakıyor! TEBRIKLER!" 🏆🎉</div>
+
+<div class="card">
+<h3>📋 Final Haftası — Deload + Değerlendirme</h3>
+<p>Ağırlıkları %25 azalt, programı aynı şekilde uygula. Vücut toparlanıyor ve en iyi halini gösteriyor.</p>
+<div class="progress-bar"><div class="progress-fill" style="width:100%"></div></div>
+<small>İlerleme: Hafta 12/12 — TAMAMLANDI! 🎉</small>
+</div>
+
+<div class="card">
+<h3>📸 FİNAL DEĞERLENDİRME</h3>
+<div class="checklist">
+<label><input type="checkbox"> Son ilerleme fotoğrafını çek</label>
+<label><input type="checkbox"> Final tartısını yap</label>
+<label><input type="checkbox"> Tüm ölçümlerini al</label>
+<label><input type="checkbox"> Hafta 1 ve Hafta 12 fotoğraflarını yan yana koy</label>
+<label><input type="checkbox"> En yüksek ağırlıklarını karşılaştır</label>
+<label><input type="checkbox"> KENDİNİ KUTLA! 🎉</label>
+</div>
+</div>
+
+<div class="card">
+<h3>🔮 Bundan Sonra Ne Yapmalı?</h3>
+<p>1. <strong>Devam programı:</strong> Faz 3'ü tekrarla, ağırlıkları kademeli artırarak devam et.</p>
+<p>2. <strong>Beslenme:</strong> Hedefine ulaştıysan kaloriyi 1800'e çıkarıp koruma fazına geç.</p>
+<p>3. <strong>Yeni hedefler:</strong> Belirli kas gruplarına odaklanabilir veya güç hedefleri koyabilirsin.</p>
+</div>
+</div>
+
+</div>
+
+<div style="text-align:center;padding:20px">
+<button class="print-btn" onclick="window.print()">🖨️ Bu Sayfayı Yazdır</button>
+</div>
+
+<div style="text-align:center;padding:20px;color:#555;font-size:0.8em">
+<p>Bu program genel bilgilendirme amaçlıdır. Sağlık sorunlarınız varsa doktorunuza danışın.</p>
+</div>
+
+<script>
+function show(id){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  // find matching button
+  const btns=document.querySelectorAll('nav button');
+  btns.forEach(b=>{if(b.getAttribute('onclick').includes("'"+id+"'"))b.classList.add('active')});
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+
+</body>
+</html>
