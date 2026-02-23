@@ -1,4 +1,4 @@
-const CACHE_NAME = "fitkocu-v1";
+const CACHE_NAME = "fitkocu-v2";
 const STATIC_ASSETS = ["/", "/antrenman", "/beslenme", "/ilerleme", "/kocun"];
 
 self.addEventListener("install", (event) => {
